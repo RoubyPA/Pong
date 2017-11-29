@@ -1,0 +1,203 @@
+#! /usr/bin/python3
+
+# TODO Copyright
+
+
+import sys
+import pygame
+# TODO add socket / net import
+
+# Global constantes
+width = 800
+height = 600
+
+bg_color = (0xFF, 0x40, 0x00)
+
+racket_max_speed = 4
+
+# Global variables
+ball_speed = [ -2, -2 ]
+p1_speed = [ 0, 0 ]
+p2_speed = [ 0, 0 ]
+
+server = False
+
+# TODO function init_game
+### Start init_game
+pygame.init ()
+screen = pygame.display.set_mode ( (width, height) )
+
+ball = pygame.image.load ("../images/ball.png")
+ball_coords = ball.get_rect ()
+
+racket_p1 = pygame.image.load ("../images/racket.png")
+racket_p1_coords = racket_p1.get_rect ()
+
+racket_p2 = pygame.image.load ("../images/racket.png")
+racket_p2_coords = racket_p2.get_rect ()
+### End init_game
+
+
+# Socket functions
+# TODO -> connect () / get_cmd () / send_cmd () / 
+
+# Move functions
+def local_move_stop ():
+    move_stop (True)
+    
+def local_move_up ():
+    move (True, True)
+    
+def local_move_down ():
+    move (True, False)
+
+def distant_move_stop ():
+    move_stop (False)
+    
+def distant_move_up ():
+    move (False, True)
+
+def distant_move_down ():
+    move (False, False)
+
+# Move
+def move (local, up):
+    speed = racket_max_speed
+    if up == False: # Move down
+        speed = -speed
+    
+    if local == True:       # Move local racket
+        if server == True:  #   Is server so is p1
+            p1_speed[1] = -speed
+        else:               #   Is not server so is p2
+            p2_speed[1] = -speed
+    else:                   # Move distant racket
+        if server == True:  #   Is server so is p2
+            p2_speed[1] = -speed
+        else:               #   Is not server so is p1
+            p1_speed[1] = -speed
+
+# Move stop
+def move_stop (local):
+    if local == True:       # Move local racket
+        if server == True:
+            p1_speed[1] = 0
+        else:
+            p2_speed[1] = 0
+    else:                   # Move distant racket
+        if server == True:
+            p2_speed[1] = 0
+        else: 
+            p1_speed[1] = 0
+
+# Update racket coords
+def update_rackets ():
+    global racket_p1_coords
+    global racket_p2_coords
+    
+    racket_p1_coords = racket_p1_coords.move (p1_speed)
+    # Clip player 1
+    if racket_p1_coords.left < 0:
+        racket_p1_coords.left = 0
+    elif racket_p1_coords.right >= width:
+        racket_p1_coords.right = width-1
+    if racket_p1_coords.top < 0:
+        racket_p1_coords.top = 0
+    elif racket_p1_coords.bottom >= height:
+        racket_p1_coords.bottom = height-1
+
+    racket_p2_coords = racket_p2_coords.move (p2_speed)
+    # Clip player 2
+    if racket_p2_coords.left < 0:
+        racket_p2_coords.left = 0
+    elif racket_p2_coords.right >= width:
+        racket_p2_coords.right = width-1
+    if racket_p2_coords.top < 0:
+        racket_p2_coords.top = 0
+    elif racket_p2_coords.bottom >= height:
+        racket_p2_coords.bottom = height-1
+
+
+def reset ():
+    ball_coords.left = 2*width/3
+    ball_coords.top = height/2
+    
+    racket_p1_coords.left = 0
+    racket_p1_coords.top = height/2+(
+        (racket_p1_coords.top-racket_p1_coords.bottom)/2)
+    
+    racket_p2_coords.right = width
+    racket_p2_coords.top = height/2+(
+        (racket_p2_coords.top-racket_p2_coords.bottom)/2)
+    
+# Update ball coords
+def update_ball ():
+    global ball_coords
+    ball_coords = ball_coords.move(ball_speed)    
+    # Bounce ball on walls
+    if ball_coords.left < 0 or ball_coords.right >= width:
+        ball_speed[0] = -ball_speed[0]
+    if ball_coords.top < 0 or ball_coords.bottom >= height:
+        ball_speed[1] = -ball_speed[1]
+
+def win ():
+    if ball_coords.left <= 0:
+        if ball_coords.bottom <= racket_p1_coords.top or ball_coords.top >= racket_p1_coords.bottom:
+            if server == True:
+                print ("lost!")
+            else:
+                print ("win!")
+            reset ()
+    if ball_coords.right >= width:
+        if ball_coords.bottom <= racket_p2_coords.top or ball_coords.top >= racket_p2_coords.bottom:
+            if server == True:
+                print ("win!")
+            else:
+                print ("lost!")
+            reset ()
+
+# Parse args
+# TODO
+# if arg1 == server:
+server = True
+
+# Init connection
+# TODO
+
+reset ()
+
+while True:
+    for e in pygame.event.get ():
+        # Exit
+        if e.type == pygame.QUIT:
+            sys.exit ()
+
+        # Move local racket
+        if e.type == pygame.KEYDOWN:
+            if e.key == pygame.K_UP:
+                local_move_up ()
+                pass
+            elif e.key == pygame.K_DOWN:
+                local_move_down ()
+                pass
+
+        elif e.type == pygame.KEYUP:
+           local_move_stop ()
+
+    # Move
+    update_ball ()
+    update_rackets ()
+
+    win ()
+
+    # Display everything
+    screen.fill(bg_color)
+    screen.blit(ball, ball_coords)
+    screen.blit(racket_p1, racket_p1_coords)
+    screen.blit(racket_p2, racket_p2_coords)
+    pygame.display.flip()
+
+    # sleep 10ms, since there is no need for more than 100Hz refresh :)
+    pygame.time.delay(10)
+    
+#EOF
