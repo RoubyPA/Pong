@@ -1,0 +1,40 @@
+Pong
+
+Systeme client / serveur :
+ - Connection TCP (eventuelement avec ssl pour éviter les ingections de packet)
+ - 
+ - Communication en ASCII
+   - Message sous la forme 'FROM:COMMANDE:ARGUMENT(S);'
+   - FROM est le role de seluis qui envoie le message
+   - COMMANDE est l'action a faire (bouger la racket, position de la balle, ...)
+   - ARGUMENT est la liste des valeurs (pos_x,pos_y) les valeurs sont séparé
+     par une virgule. Si aucun argument n'est a envoyer le chant sera egal a 'null'
+   - les message se termine pas un ';'
+   
+ - Pour évité la triche les deux doivent vérifier la position de l'autre lorsque
+   un point est marquer
+ - Tous les x secondes la position de la balles et des rackets doivent être
+   échanger par les deux partie...
+ - Une marge d'erreur peut être prise en compte par rapport au ping
+
+
+Les COMMANDES:
+
+ - 'OKAY' / 'NOPE'
+   Si on demande une reponce de verification ses commandes peuvent être envoyer
+   en cas de reusite (OKAY) ou d'echec (NOPE)
+ - 'CONN' syncronisation initial des programmes
+   Verification des versions et des constants par defaut
+     "CLIENT:CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     "SERVER:CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     "CLIENT:OKAY:null;" / "CLIENT:NOPE:null;"
+ - 'PING' calcule du ping entre le client et le server att la reponce 'PONG'
+     "SERVER:PING:null;" --> "CLIENT:PONG:null;"
+ - 'START' ...
+ - 'SYNC' syncronisation des possition des racket et de la balle
+     "SERVER:SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
+     "CLIENT:SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
+ - 'MOVE' donnes une indication d'un debut de mouvement de la raket du joueur
+     "SERVER:MOVE:UP,start_x;"
+     "SERVER:MOVE:DOWN,start_x;"
+     "SERVER:MOVE:STOP,end_x;"
