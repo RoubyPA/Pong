@@ -25,16 +25,16 @@ Les COMMANDES:
    en cas de reusite (OKAY) ou d'echec (NOPE)
  - 'CONN' syncronisation initial des programmes
    Verification des versions et des constants par defaut
-     "CLIENT:CONN:version,ball_speed_x,ball_speed_y,r_speed;"
-     "SERVER:CONN:version,ball_speed_x,ball_speed_y,r_speed;"
-     "CLIENT:OKAY:null;" / "CLIENT:NOPE:null;"
+     "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     "OKAY:null;" / "NOPE:null;"
  - 'PING' calcule du ping entre le client et le server att la reponce 'PONG'
-     "SERVER:PING:null;" --> "CLIENT:PONG:null;"
+     "PING:null;" --> "PONG:null;"
  - 'START' start new games
  - 'SYNC' syncronisation des possition des rackets et de la balle
-     "SERVER:SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
-     "CLIENT:SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
+     "SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
+     "SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
  - 'MOVE' donnes une indication d'un debut de mouvement de la raket du joueur
-     "SERVER:MOVE:UP,start_x;"
-     "SERVER:MOVE:DOWN,start_x;"
-     "SERVER:MOVE:STOP,end_x;"
+     "MOVE:UP,start_x;"
+     "MOVE:DOWN,start_x;"
+     "MOVE:STOP,end_x;"
