@@ -1,4 +1,7 @@
-- [ ] We need to decide a default language for this document, it's a fucking mess
+* We need to decide a default language for this document, it's a fucking mess
+- [ ] français
+- [ ] english
+(#StrawPoll.org)
 
 * Important things
 
@@ -39,6 +42,12 @@
 
 
 * Optional and funny things to do
+** Code the GUI in OOP (yes for a game I'm ok)
+
+** Add bonus/malus objects
+
+** Add scores
+
 ** Take parameters like a bash program
 *** Parameters list
    -p port (provide a default ?)
@@ -54,6 +63,8 @@ of the racket.
 
 ** Add a UDP mode
 We can call it: The YOLO Mode
+
+** Run in 60FPS, less is for pussies
 
 ** Easter eggs ideas
 
