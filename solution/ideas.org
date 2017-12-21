@@ -1,8 +1,59 @@
-* Take parameters like a normal program
-** Parameters list
-   -p port (provide a default)
-   -c client (followed by the machine to connect to)
-   -s server (this one is the default)
+- [ ] We need to decide a default language for this document, it's a fucking mess
 
-** Add a menu
+* Important things
+
+** Systeme client / serveur
+*** Connection TCP (éventuellement avec ssl pour éviter les injections de packets)
+*** Communication en ASCII
+- Message sous la forme 'FROM:COMMANDE:ARGUMENT(S);'
+- FROM est le role de seluis qui envoie le message
+- COMMANDE est l'action a faire (bouger la racket, position de la balle, ...)
+- ARGUMENT est la liste des valeurs (pos_x,pos_y) les valeurs sont
+  séparé par une virgule. Si aucun argument n'est a envoyer le chant sera egal a 'null' 
+- les message se termine pas un ';'
+  
+
+*** Pour éviter la triche les deux doivent vérifier la position de l'autre lorsque un point est marqué
+*** Toutes les x secondes la position de la balle et des rackettes doivent être échangées par les deux parties
+*** Une marge d'erreur peut être prise en compte par rapport au ping
+
+** Les COMMANDES
+ - 'OKAY' / 'NOPE'
+   Si on demande une reponce de verification ses commandes peuvent être envoyer
+   en cas de reusite (OKAY) ou d'echec (NOPE)
+ - 'CONN' syncronisation initial des programmes
+   Verification des versions et des constants par defaut
+     "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     "OKAY:null;" / "NOPE:null;"
+ - 'PING' calcule du ping entre le client et le server att la reponce 'PONG'
+     "PING:null;" --> "PONG:null;"
+ - 'START' start new games
+ - 'SYNC' syncronisation des possition des rackets et de la balle
+     "SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
+     "SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
+ - 'MOVE' donnes une indication d'un debut de mouvement de la raket du joueur
+     "MOVE:UP,start_x;"
+     "MOVE:DOWN,start_x;"
+     "MOVE:STOP,end_x;"
+
+
+* Optional and funny things to do
+** Take parameters like a bash program
+*** Parameters list
+   -p port (provide a default ?)
+   -c client (followed by the machine to connect to)
+   -s server (this one is also the default parameter)
+   
+*** Add a menu
 Maybe to complicated, to do at the end
+
+** Add realistics collisions
+So that the ball will bounce differently given the position and speed
+of the racket.
+
+** Add a UDP mode
+We can call it: The YOLO Mode
+
+** Easter eggs ideas
+
