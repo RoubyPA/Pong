@@ -1,0 +1,29 @@
+Voici les modalités de remise du rapport:
+
+Mettez dans une archive tar à la fois le rapport et le code. Le nom de
+l'archive doit contenir les logins des deux membres du binôme, ainsi
+que des caractères qui constituerons votre "clé secrète":
+
+tar czf login1-login2-????.tar.gz rapport.pdf code/
+
+Utilisez la commande suivante pour vérifier qu'il y a bien tout ce
+qu'il faut:
+
+tar tzf login1-login2-????.tar.gz
+
+Assurez-vous de donner le droit en lecture pour tous sans pour autant
+donner le droit en écriture :
+
+chmod a+r login1-login2-????.tar.gz
+chmod og-w login1-login2-????.tar.gz
+
+Déplacez l'archive dans le répertoire /net/cremi/sathibau/rapports/ :
+
+mv login1-login2-????.tar.gz /net/cremi/sathibau/rapports/
+
+Les droits de ce répertoire sont "drwx-wx-wt", donc normalement :
+- vous pouvez écrire dedans (ouf!)
+- vous ne pouvez pas supprimer les TPs des autres (droit 't')
+- vous ne pouvez pas lire le contenu du répertoire (donc souvenez-vous
+bien de votre clé secrète...)
+- sathibau a tous les droits ;-)

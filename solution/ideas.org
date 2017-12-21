@@ -1,0 +1,8 @@
+* Take parameters like a normal program
+** Parameters list
+   -p port (provide a default)
+   -c client (followed by the machine to connect to)
+   -s server (this one is the default)
+
+** Add a menu
+Maybe to complicated, to do at the end
