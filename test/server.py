@@ -69,7 +69,7 @@ def star(conn):
 srvsocket = socket.socket()
 srvsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 srvsocket.bind((HOST, PORT))
-srvsocket.listen()
+srvsocket.listen(5)
 
 while True:
     conn, fromaddr = srvsocket.accept()

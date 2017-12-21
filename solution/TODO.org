@@ -22,10 +22,10 @@
 
 ** Les COMMANDES
  - 'OKAY' / 'NOPE'
-   Si on demande une reponce de verification ses commandes peuvent être envoyer
-   en cas de reusite (OKAY) ou d'echec (NOPE)
- - 'CONN' syncronisation initial des programmes
-   Verification des versions et des constants par defaut
+   Si on demande une reponse de verification ces commandes peuvent être envoyées
+   en cas de réussite (OKAY) ou d'échec (NOPE)
+ - 'CONN' syncronisation initiale des programmes
+   Verification des versions et des constantes par defaut
      "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
      "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
      "OKAY:null;" / "NOPE:null;"
@@ -66,5 +66,15 @@ We can call it: The YOLO Mode
 
 ** Run in 60FPS, less is for pussies
 
+** Add a mode that accelerate the ball
+- with time
+- when the player push the spacebar at the right moment, like a
+  flipper
+
 ** Easter eggs ideas
+
+* Notes (to discuss)
+- I don't see any need to have an array variable "racket_speed = [ 0, 0 ]", since
+  the movement is one dimensional. 
+  So we could simplify by just writing: racket_speed = 0
 
