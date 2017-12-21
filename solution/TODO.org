@@ -73,8 +73,4 @@ We can call it: The YOLO Mode
 
 ** Easter eggs ideas
 
-* Notes (to discuss)
-- I don't see any need to have an array variable "racket_speed = [ 0, 0 ]", since
-  the movement is one dimensional. 
-  So we could simplify by just writing: racket_speed = 0
-
+* Notes (things to discuss)
