@@ -16,7 +16,7 @@ r_speed = 2
 # context.load_cert_chain("../serveur/server.crt", keyfile="../serveur/server.key")
 
 # echo server
-def star(conn):
+def start(conn):
 
     connected = 0
 
@@ -77,7 +77,7 @@ while True:
     # sslconn = context.wrap_socket(conn, server_side=True)
     # echo(sslconn)
     # sslconn.close()
-    star(conn)
+    start(conn)
     conn.close()
     
 srvsocket.close()

@@ -1,8 +1,3 @@
-* We need to decide a default language for this document, it's a fucking mess
-- [ ] français
-- [ ] english
-(#StrawPoll.org)
-
 * Important things
 
 ** Systeme client / serveur
@@ -40,13 +35,17 @@
      "MOVE:DOWN,start_x;"
      "MOVE:STOP,end_x;"
 
-
 * Optional and funny things to do
 ** Code the GUI in OOP (yes for a game I'm ok)
 
 ** Add bonus/malus objects
 
 ** Add scores
+
+** Add gravity
+
+** Add LSD mode
+A mode that change the background color given the position of the ball.
 
 ** Take parameters like a bash program
 *** Parameters list
