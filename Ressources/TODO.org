@@ -35,6 +35,10 @@
      "MOVE:DOWN,start_x;"
      "MOVE:STOP,end_x;"
 
+
+** Multithreading
+
+
 * Optional and funny things to do
 ** Code the GUI in OOP (yes for a game I'm ok)
 
