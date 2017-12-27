@@ -10,14 +10,14 @@ class Racket(object):
     def __init__(self, y, max_speed):
         self.y = y
         self.max_speed = max_speed
-        self.image = pygame.image.load("../images/lightsaber_green.png")
-        self.coords = image.get_rect()
+        self.racket = pygame.image.load("../images/racket.png")
+        self.coords = self.racket.get_rect()
 
     def move(self, up):
         if up == True:
-            self.speed = max_speed
+            self.speed = self.max_speed
         else:
-            self.speed = -max_speed
+            self.speed = -self.max_speed
 
     def get_speed(self):
         return self.speed
@@ -30,16 +30,15 @@ class Racket(object):
 # Ball                                                                         #
 ################################################################################
 class Ball(object):
-    def throw(self):
+    def throw(self, width, height):
         self.coords.left = 2*width/3
         self.coords.top = height/2
 
     def __init__(self, speed, gravity):
-        self.throws()
         self.speed = speed
         self.gravity = gravity
-        self.image = pygame.image.load("../images/ball.png")
-        self.coords = image.get_rect()
+        self.ball = pygame.image.load("../images/ball.png")
+        self.coords = self.ball.get_rect()
         
 
 ################################################################################
@@ -79,15 +78,27 @@ class Game(object):
         self.bg_R = 229
         self.bg_V = 228
         self.bg_B = 240
-        self.background_color = (bg_R, bg_V, bg_B)
+        self.background_color = (self.bg_R, self.bg_V, self.bg_B)
 
         # Init pygame lib
         pygame.init()
         self.screen = pygame.display.set_mode( (self.width, self.height) )
 
         # Init Games Objects
-        self.player_1 = Racket(height/2, racket_max_speed)
-        self.player_2 = Racket(height/2, racket_max_speed)
-        self.ball = Ball()
+        self.player_1 = Racket(self.height/2, self.racket_max_speed)
+        self.player_2 = Racket(self.height/2, self.racket_max_speed)
+        self.ball = Ball(2, 0)
         self.score = Score()
     
+    def throw_ball(self):
+        self.ball.throw(self.width, self.height)
+
+    def update_screen(self):
+        self.screen.fill(self.background_color)
+        self.screen.blit(self.player_1.racket, self.player_1.coords)
+        self.screen.blit(self.player_2.racket, self.player_2.coords)
+        self.screen.blit(self.ball.ball, self.ball.coords)
+        pygame.display.flip()
+        
+    def delay(self):
+        pygame.time.delay(10)
