@@ -29,6 +29,8 @@ class Paddle(object):
         "get self.y"
         return self.y
 
+    #def draw(self):
+        
 
 ################################################################################
 # Class Ball
@@ -38,14 +40,21 @@ class Ball(object):
         self.coords.left = 2*self.width/3
         self.coords.top = self.height/2
 
-    def __init__(self, speed=1, gravity=1):
-        self.width = 1
-        self.height = 1
-        self.speed = speed
-        self.gravity = gravity
-        self.image = pygame.image.load("images/ball.png")
-        self.coords = self.image.get_rect()
-        self.throw()
+    # def __init__(speed=1, gravity=1):
+    def __init__(self, x, y, vx, vy, radius, colour):
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
+        self.radius = radius
+        self.colour = colour
+        # self.width = 1
+        # self.height = 1
+        # self.speed = speed
+        # self.gravity = gravity
+        # self.image = pygame.image.load("images/ball.png")
+        # self.coords = self.image.get_rect()
+        # self.throw()
         
     def bounce(self):
         ball_coords = ball_coords.move(ball_speed)
@@ -55,6 +64,9 @@ class Ball(object):
         if ball_coords.top < 0 or ball_coords.bottom >= height:
             ball_speed[1] = -ball_speed[1]
 
+    def draw(self, surface):
+        pygame.draw.circle(surface, self.colour, (self.x, self.y), self.radius, 0)
+        
 
 ################################################################################
 # Class Score
@@ -97,14 +109,15 @@ class Game(object):
         # Init Games Objects
         self.player_1 = Paddle(self.height/2, self.paddle_max_speed)
         self.player_2 = Paddle(self.height/2, self.paddle_max_speed)
-        self.ball = Ball()
+        self.ball = Ball(250, 150, 3, 3, 10, (0,0,0))
         self.score = Score()
     
     def draw(self):
         self.screen.fill(self.background_color)
-        self.screen.blit(self.ball, self.ball.coords)
-        self.screen.blit(self.player_1, self.player_1.coords)
-        self.screen.blit(self.player_2, self.player_2.coords)
+        self.ball.draw(self.screen)
+        # self.screen.blit(self.ball, self.ball.coords)
+        # self.screen.blit(self.player_1, self.player_1.coords)
+        # self.screen.blit(self.player_2, self.player_2.coords)
         pygame.display.flip()
         pygame.time.delay(10)
 
