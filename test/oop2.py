@@ -109,7 +109,7 @@ class Game(object):
         # Init Games Objects
         self.player_1 = Paddle(self.height/2, self.paddle_max_speed)
         self.player_2 = Paddle(self.height/2, self.paddle_max_speed)
-        self.ball = Ball(250, 150, 3, 3, 10, (0,0,0))
+        self.ball = Ball(300, 300, 3, 3, 25, (0,0,0))
         self.score = Score()
     
     def draw(self):
