@@ -61,10 +61,7 @@ def get_option():
 ################################################################################
 host, port, server, ssl = get_option()
 
-print(host)
-print(port)
-print(server)
-print(ssl)
+connection = Sock(host, port, server=server, tcp=True, ssl=ssl)
 
 session = Game();
 session.throw_ball();

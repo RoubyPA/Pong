@@ -36,8 +36,9 @@ class Sock(object):
         self.conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.conn.bind((self.host, self.port))
         self.conn.listen()
-
+        print("Wait client connection...", end=" ")
         self.client, self.client_addr = self.conn.accept()
+        print("Connected !")
         
     def close_connection(self):
         self.conn.close()
