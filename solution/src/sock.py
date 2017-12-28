@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import sys
 import socket
 
 BUF_SIZE = 1024
@@ -20,7 +21,8 @@ class Sock(object):
     def tcp_connect(self):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((self.host, self.port))
-
+        self.data = self.conn
+        
     def connect_to_server(self):
         # if ssl == True:
         #     self.context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
@@ -37,13 +39,39 @@ class Sock(object):
         self.conn.bind((self.host, self.port))
         self.conn.listen()
         print("Wait client connection...", end=" ")
-        self.client, self.client_addr = self.conn.accept()
+        self.data, self.client_addr = self.conn.accept()
         print("Connected !")
-        
-    def close_connection(self):
-        self.conn.close()
-        print("Connection close")
-    
-    def get_str_from_socket(self):
-        answer = self.conn.recv(BUF_SIZE)
+
+    def send_cmd(self, request):
+        cmd = request.encode()
+        print(cmd)
+        self.data.send(cmd)
+
+    def recv_cmd(self):
+        answer = self.data.recv(BUF_SIZE)
+        if answer in (b'', b'\n'):
+            self.close_connection_with_msg(answer)
+            sys.exit(1)
+            
         return answer.decode()
+    
+    def close_connection(self):
+        self.data.close()
+
+        if self.server == True:
+            self.conn.close()
+        
+        print("Connection close")
+
+    def close_connection_with_msg(self, msg):
+        self.conn.close()
+
+        if self.server == True:
+            self.conn.close()
+
+        print("Connection close:", end=" ")
+
+        if msg in (b'', b'\n', "", "\n"):
+            print("with empty data send by peer")
+        else:
+            print(msg)
