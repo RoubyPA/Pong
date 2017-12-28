@@ -9,31 +9,24 @@ import pygame
 class Paddle(object):
     def __init__(self, y, max_speed):
         "init player paddle"
-        self.y = y
-        self.max_speed = max_speed        
+        self.y = y # not used
+        self.max_speed = max_speed # not used
+        self.paddle_speed = paddle_speed = [ 0, 0 ]
         self.image = pygame.image.load("images/lightsaber_green.png")
         self.coords = self.image.get_rect()
         
-    def move(self, direction):
+    def move_paddle(self, direction):
         "Move paddle up if direction == up"
+        self.direction = direction
         if self.direction == "up":
-            self.speed = speed
+            self.paddle_speed[1] = -4
+        elif self.direction == "down":
+            self.paddle_speed[1] = 4
         else:
-            self.speed = -speed
-
-    # Old code, just here to help
-    # racket_speed = [ 0, 0 ]            
-    # racket_coords = racket.get_rect()
-    
-    # # Move racket
-    # racket_coords = racket_coords.move(racket_speed)
-
-    # # Racket reached racket position?
-    # if ball_coords.left <= 0:
-    #     if ball_coords.bottom <= racket_coords.top or ball_coords.top >= racket_coords.bottom:
-    #         print("lost!")
-    #         throw()
-            
+            self.paddle_speed[1] = 0
+        
+        self.coords = self.coords.move(self.paddle_speed)
+        
     def get_speed(self):
         "get self.speed"
         return self.speed
@@ -66,15 +59,6 @@ class Ball(object):
         self.radius = radius
         self.colour = colour
 
-        # Old used variables:
-        # self.width = 1
-        # self.height = 1
-        # self.speed = speed
-        # self.gravity = gravity
-        # self.image = pygame.image.load("images/ball.png")
-        # self.coords = self.image.get_rect()
-        # self.throw()
-
     def move(self):
         "move the ball"
         self.x += self.vx
@@ -87,10 +71,9 @@ class Ball(object):
                 
     def bounce(self, width, height):
         "bounce the ball on the walls"
-        # TODO: replace 20 by the radius variabe (to pass as parameter)
-        if self.x - 20 < 0 or self.x + 20 >= width:
+        if self.x - self.radius < 0 or self.x + self.radius >= width:
               self.vx = -self.vx
-        if self.y - 20 < 0 or self.y + 20 >= height:
+        if self.y - self.radius < 0 or self.y + self.radius >= height:
               self.vy = -self.vy
 
     def draw(self, surface):
@@ -170,24 +153,23 @@ class Game(object):
                 # Check for paddle movements
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        #paddle_speed[1] = -4
-                        #self.player_1.move("up")
+                        self.player_1.move_paddle("up")
                         pass
                     elif event.key == pygame.K_DOWN:
-                        #paddle_speed[1] = 4
+                        self.player_1.move_paddle("down")
                         pass
 
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP:
-                        #paddle_speed[1] = 0
+                        self.player_1.move_paddle("stop")
                         pass
                     elif event.key == pygame.K_DOWN:
-                        #paddle_speed[1] = 0
+                        self.player_1.move_paddle("stop")
                         pass            
             
             self.draw()
 
-            
+                      
 ################################################################################
 # Game Instance
 ################################################################################            
