@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 import socket
+from sock import *
+
 # import ssl
 
 HOST= "127.0.0.1"
@@ -7,17 +9,16 @@ PORT= 7777
 BUFSIZE= 1024
 
 version = 0.1
-ball_speed_x = 4
-ball_speed_y = 4
-r_speed = 2
+
+ball_speed_x = 0
+ball_speed_y = 0
+r_speed = 0
 
 # ssl context
 # context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
 # context.load_verify_locations("../authorite/ca.crt")
 
 # sock
-conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-conn.connect((HOST, PORT))
 # ssl
 # sslconn = context.wrap_socket(conn, server_hostname=HOST)
 # request = b"Hello World!"
@@ -27,21 +28,24 @@ conn.connect((HOST, PORT))
 # sslconn.close()
 
 # Application Connection
-request = "CONN:" + str(version) + "," + str(ball_speed_x) + "," + str(ball_speed_y) + "," + str(r_speed) + ";"
+conn = Sock(HOST, PORT)
 
-conn.send(request.encode())
-answer = conn.recv(BUFSIZE)
-print(answer.decode())
 
-# connection OKAY
-request = b"OKAY:null;"
-conn.send(request)
-print(answer.decode())
+# request = "CONN:" + str(version) + "," + str(ball_speed_x) + "," + str(ball_speed_y) + "," + str(r_speed) + ";"
 
-# ping
-request = b"PING:null;"
-conn.send(request)
-answer = conn.recv(BUFSIZE)
-print(answer.decode())
+# conn.send(request.encode())
+# answer = conn.recv(BUFSIZE)
+# print(answer.decode())
 
-conn.close()
+# # connection OKAY
+# request = b"OKAY:null;"
+# conn.send(request)
+# print(answer.decode())
+
+# # ping
+# request = b"PING:null;"
+# conn.send(request)
+# answer = conn.recv(BUFSIZE)
+# print(answer.decode())
+
+conn.close_connection()

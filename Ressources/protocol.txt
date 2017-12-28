@@ -24,12 +24,21 @@ Les COMMANDES:
    Si on demande une reponce de verification ses commandes peuvent être envoyer
    en cas de reusite (OKAY) ou d'echec (NOPE)
  - 'CONN' syncronisation initial des programmes
+   (Il va faloir envoyer plus de paramètre pour que sa soit utile...)
    Verification des versions et des constants par defaut
-     "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
-     "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
-     "OKAY:null;" / "NOPE:null;"
+     Server => "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     	       -- envoie de paramètre de jeux
+	       
+     Client => "CONN:version,ball_speed_x,ball_speed_y,r_speed;"
+     	       -- renvoie si tous est OK pour le client
+	       
+     Server => "OKAY:null;" / "NOPE:null;"
+     	       -- ACK du server
+	       
  - 'PING' calcule du ping entre le client et le server att la reponce 'PONG'
      "PING:null;" --> "PONG:null;"
+     	-- Permet de calculé le ping pour corigé la position des objets
+	
  - 'START' start new games
  - 'SYNC' syncronisation des possition des rackets et de la balle
      "SYNC:r1_x,r1_y,r2_x,r2_y,b_x,b_y;"
@@ -38,3 +47,11 @@ Les COMMANDES:
      "MOVE:UP,start_x;"
      "MOVE:DOWN,start_x;"
      "MOVE:STOP,end_x;"
+
+Etape de la connection
+      CONN
+      PING (des deux cotés ?)
+      START
+      
+Syncronisation (utile ?)
+      SYNC tous les 2(ou 3) seconde pour corrigé les positions si un décalage a lieux
