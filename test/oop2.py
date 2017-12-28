@@ -19,15 +19,27 @@ class Paddle(object):
         "Move paddle up if direction == up"
         self.direction = direction
         if self.direction == "up":
-            self.paddle_speed[1] = -4
+            self.paddle_speed[1] = -5
         elif self.direction == "down":
-            self.paddle_speed[1] = 4
+            self.paddle_speed[1] = 5
         else:
             self.paddle_speed[1] = 0
-        
-    def draw(self):
+                
+    def draw(self, width, height):
         self.coords = self.coords.move(self.paddle_speed)
-        
+    
+        if self.coords.left < 0:
+            self.coords.left = 0
+        elif self.coords.right >= width:
+            self.coords.right = width-1
+        if self.coords.top < 0:
+            self.coords.top = 0
+        elif self.coords.bottom >= height:
+            self.coords.bottom = height-1
+
+    def get_coords(self):
+        return self.coords.move(self.paddle_speed)
+            
     def get_speed(self):
         "get self.speed"
         return self.speed
@@ -46,12 +58,7 @@ class Paddle(object):
 # Class Ball
 ################################################################################
 class Ball(object):
-    def throw(self):
-        "Old function to throw the ball, to remove or recode"
-        self.coords.left = 2*self.width/3
-        self.coords.top = self.height/2
-
-    def __init__(self, x, y, vx, vy, radius, colour):
+    def __init__(self, x, y, vx, vy, radius, colour, image = 0):
         "Init ball object"
         self.x = x
         self.y = y
@@ -59,6 +66,9 @@ class Ball(object):
         self.vy = vy
         self.radius = radius
         self.colour = colour
+        self.paddle_coords = paddle_coords = [ 0, 0 ]
+
+        # if image != 0:
 
     def move(self):
         "move the ball"
@@ -77,22 +87,52 @@ class Ball(object):
         if self.y - self.radius < 0 or self.y + self.radius >= height:
               self.vy = -self.vy
 
+    def paddle_collision(self, paddle_coords):
+        "detect paddle collision"
+        if self.x - self.radius < 0:
+            if self.y - self.radius < paddle_coords.bottom and self.y + self.radius > paddle_coords.top:
+                print("touch!")
+            else:
+                print("lost!")
+
     def draw(self, surface):
         pygame.draw.circle(surface, self.colour, (self.x, self.y), self.radius, 0)
 
+    def throw(self):
+        "Use random, this method should be in Game"
+                
         
 ################################################################################
-# Class Item (bonus, malus, etc)
+# Class Item (bonus, malus, etc) + subclasses
 ################################################################################
-#class Item(object):
-    
+class Item(object):
+    "Item class, will serve as a superclass for bonus elements, see example below"
+    def __init__(self, x, y, vx, vy, ):
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
+        
+# class RMS(Item):
+#     "Will replace or place RMS face on ball, or send a RMS face to the oponent, don't know"
 
+# class BillGates(Item):
+#     "This one is clearly a malus, add a 'hahaha' sound to it"
+
+# class SteveBalmer(Item):
+#     "A malus too"
+
+# class Torvalds(Item):
+# class JWZ(Item):
+# class Doom(Item):
+# class KungFurry(Item):
         
 ################################################################################
 # Class Score
 ################################################################################
 class Score(object):
     def __init__(self):
+        "todo: write a module that go on top of the elements"
         self.player_1 = 0
         self.player_2 = 0
 
@@ -118,8 +158,8 @@ class Game(object):
         self.ball_gravity = 0
         self.ball_x = 300
         self.ball_y = 300
-        self.ball_vx = 3 # velocity along the x axis
-        self.ball_vy = 3
+        self.ball_vx = 4 # velocity along the x axis
+        self.ball_vy = 4
         self.ball_radius = 20
         self.ball_color = (0,0,0)
 
@@ -139,21 +179,20 @@ class Game(object):
         self.ball = Ball(self.ball_x, self.ball_y, self.ball_vx, self.ball_vy, self.ball_radius, self.ball_color)
         self.score = Score()
 
-        #pygame.key.set_repeat(10, 10)
-    
     def draw(self):
         self.screen.fill(self.background_color)
         self.ball.draw(self.screen)
         self.ball.move()
         self.ball.bounce(self.width, self.height)
+        self.ball.paddle_collision(self.player_1.get_coords())
 
-        self.player_1.draw()
-        self.screen.blit(self.player_1.image, self.player_1.coords)
+        self.player_1.draw(self.width, self.height)
+        self.screen.blit(self.player_1.image, self.player_1.get_coords())
 
         pygame.display.flip()
         pygame.time.delay(10)
 
-        
+
     def play(self):
         while True:
             for event in pygame.event.get():
@@ -179,7 +218,7 @@ class Game(object):
                         pass            
             
             self.draw()
-
+ 
                       
 ################################################################################
 # Game Instance

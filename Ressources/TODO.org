@@ -40,40 +40,41 @@
 
 
 * Optional and funny things to do
-** Code the GUI in OOP (yes for a game I'm ok)
 
-** Add bonus/malus objects
+** TODO Code the GUI in OOP (yes for a game I'm ok)
 
-** Add scores
+** TODO Add bonus/malus objects
 
-** Add gravity
+** TODO Add scores
 
-** Add LSD mode
+** TODO Add gravity
+
+** TODO Add LSD mode
 A mode that change the background color given the position of the ball.
 
-** Take parameters like a bash program
-*** Parameters list
+** TODO Take parameters like a bash program
+*** TODO Parameters list
    -p port (provide a default ?)
    -c client (followed by the machine to connect to)
    -s server (this one is also the default parameter)
    
-*** Add a menu
+*** TODO Add a menu
 Maybe to complicated, to do at the end
 
-** Add realistics collisions
+** TODO Add realistics collisions
 So that the ball will bounce differently given the position and speed
 of the racket.
 
-** Add a UDP mode
+** TODO Add a UDP mode
 We can call it: The YOLO Mode
 
-** Run in 60FPS, less is for pussies
+** TODO Run in 60FPS, less is for pussies
 
-** Add a mode that accelerate the ball
+** TODO Add a mode that accelerate the ball
 - with time
 - when the player push the spacebar at the right moment, like a
   flipper
 
-** Easter eggs ideas
+** TODO Easter eggs ideas
 
 * Notes (things to discuss)
