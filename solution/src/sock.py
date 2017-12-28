@@ -44,7 +44,6 @@ class Sock(object):
 
     def send_cmd(self, request):
         cmd = request.encode()
-        print(cmd)
         self.data.send(cmd)
 
     def recv_cmd(self):
@@ -52,7 +51,6 @@ class Sock(object):
         if answer in (b'', b'\n'):
             self.close_connection_with_msg(answer)
             sys.exit(1)
-            
         return answer.decode()
     
     def close_connection(self):

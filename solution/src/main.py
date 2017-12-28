@@ -4,6 +4,7 @@ import sys, os
 import signal
 import pygame
 import getopt
+import time
 
 from pong import *
 from sock import *
@@ -79,10 +80,38 @@ class Protocol(object):
         sarg = arg.split(",")
         return act, sarg
         
-    def ping(self):
-        self.conn.send_cmd("PING:null;")
-        response = self.conn.recv_cmd()
-    
+    def calcul_ping(self):
+        # On sais jamais ¯\_(ツ)_/¯
+        if self.connected == False:
+            sys.exit(1)
+            
+        if self.conn.server == True:
+            cmd = self.format_cmd("PING", ["null"])
+            start = time.time() # Start timer
+            self.conn.send_cmd(cmd) # Send ping cmd
+            cmd = self.conn.recv_cmd() # Wait pong cmd
+
+            # Fail ping
+            if cmd[:4] != "PONG":
+                self.conn.close_connection_with_msg("Fail PING: " + cmd)
+                sys.exit(1)
+            stop = time.time() # Stop timer
+            
+            self.ping = stop - start
+            print("Ping : ", self.ping)
+        else:
+            pong = self.format_cmd("PONG", ["null"])
+            time.sleep(0.03) # add 30 ms ping <-- To delete
+            cmd = self.conn.recv_cmd() # Wait ping cmd
+            print(cmd) # To delete
+            # Not a PING
+            if cmd[:4] != "PING":
+                cmd = self.format_cmd("NOPE", ["null"])
+                self.conn.close_connection_with_msg("Fail PING: " + cmd)
+                sys.exit(1)
+
+            self.conn.send_cmd(pong) # Send pong cmd
+        
     def connection(self):
         global version
         
@@ -101,23 +130,24 @@ class Protocol(object):
 
             cmd = self.format_cmd("OKAY", ["null"])
             self.conn.send_cmd(cmd)
-                
+
         else:
             print("Wait server paramètre ...", end=" ")
             cmd = self.conn.recv_cmd()
             print("Done")
             act, arg = self.parse_cmd(cmd)
 
-            # commande error
+            # Commande error
             if act != "CONN":
                 self.conn.close_connection_with_msg("Invalid command: " + act)
                 sys.exit(1)
                 
-            # incompatible version
+            # Incompatible version
             if arg[0] != str(version):
                 self.conn.close_connection_with_msg("Incompatible version: " + arg[0])
                 sys.exit(1)
-                
+
+            # Set game paraméters
             self.game.ball.speed = int(arg[1])
             self.game.player_1.max_speed = int(arg[2])
             self.game.player_2.max_speed = int(arg[3])
@@ -148,7 +178,10 @@ session = Game()
 multi = Protocol(connection, session)
 
 multi.connection()
+time.sleep(0.5) # HACK : to be sure we dont mix connection and ping trams
+multi.calcul_ping()
 
+    
 session.throw_ball();
 
 while True:
