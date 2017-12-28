@@ -25,6 +25,7 @@ class Paddle(object):
         else:
             self.paddle_speed[1] = 0
         
+    def draw(self):
         self.coords = self.coords.move(self.paddle_speed)
         
     def get_speed(self):
@@ -81,6 +82,13 @@ class Ball(object):
 
         
 ################################################################################
+# Class Item (bonus, malus, etc)
+################################################################################
+#class Item(object):
+    
+
+        
+################################################################################
 # Class Score
 ################################################################################
 class Score(object):
@@ -130,6 +138,8 @@ class Game(object):
         self.player_2 = Paddle(self.height/2, self.paddle_max_speed)
         self.ball = Ball(self.ball_x, self.ball_y, self.ball_vx, self.ball_vy, self.ball_radius, self.ball_color)
         self.score = Score()
+
+        #pygame.key.set_repeat(10, 10)
     
     def draw(self):
         self.screen.fill(self.background_color)
@@ -137,6 +147,7 @@ class Game(object):
         self.ball.move()
         self.ball.bounce(self.width, self.height)
 
+        self.player_1.draw()
         self.screen.blit(self.player_1.image, self.player_1.coords)
 
         pygame.display.flip()
