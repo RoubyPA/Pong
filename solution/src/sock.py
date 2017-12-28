@@ -2,6 +2,7 @@
 
 import sys
 import socket
+import time
 
 BUF_SIZE = 1024
 
@@ -17,12 +18,14 @@ class Sock(object):
             self.wait_client()
         else:
             self.connect_to_server()
-    
+
+        # self.data.setblocking(0) # HACK: For optimisation of CPU time
+            
     def tcp_connect(self):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((self.host, self.port))
         self.data = self.conn
-        
+
     def connect_to_server(self):
         # if ssl == True:
         #     self.context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
@@ -45,14 +48,28 @@ class Sock(object):
     def send_cmd(self, request):
         cmd = request.encode()
         self.data.send(cmd)
-
     def recv_cmd(self):
         answer = self.data.recv(BUF_SIZE)
         if answer in (b'', b'\n'):
-            self.close_connection_with_msg(answer)
+            close_connection_with_msg(answer)
             sys.exit(1)
+            
         return answer.decode()
-    
+        
+    # """ HACK : setblocking as to 0
+    #            Save CPU time
+    #            Add time out ?
+    #            20 ms ? To many lag in game ? 
+    # """
+    # def recv_cmd(self):
+    #     while True:
+    #         try:
+    #             answer = self.data.recv(BUF_SIZE)
+    #             return answer.decode()
+    #         except:
+    #             sys.pause()
+    #             #time.sleep(2) # Sleep 20 ms
+        
     def close_connection(self):
         self.data.close()
 

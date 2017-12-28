@@ -4,6 +4,7 @@ import sys, os
 import signal
 import pygame
 import getopt
+import _thread
 import time
 
 from pong import *
@@ -79,7 +80,22 @@ class Protocol(object):
         arg = cmd[5:-1]
         sarg = arg.split(",")
         return act, sarg
-        
+
+    def run(self):
+        while True:
+            cmd = self.conn.recv_cmd()
+            act, arg = self.parse_cmd(cmd)
+
+            if act == "MOVE":
+                print(act)
+            elif act == "SYNC":
+                print(act)
+            elif act == "PING":
+                self.conn.send_cmd(self.format_cmd("PONG", ["null"]))
+            else:
+                print("Comande unkown !")
+                break
+    
     def calcul_ping(self):
         # On sais jamais ¯\_(ツ)_/¯
         if self.connected == False:
@@ -103,7 +119,6 @@ class Protocol(object):
             pong = self.format_cmd("PONG", ["null"])
             time.sleep(0.03) # add 30 ms ping <-- To delete
             cmd = self.conn.recv_cmd() # Wait ping cmd
-            print(cmd) # To delete
             # Not a PING
             if cmd[:4] != "PING":
                 cmd = self.format_cmd("NOPE", ["null"])
@@ -180,8 +195,8 @@ multi = Protocol(connection, session)
 multi.connection()
 time.sleep(0.5) # HACK : to be sure we dont mix connection and ping trams
 multi.calcul_ping()
+_thread.start_new_thread(multi.run, ())
 
-    
 session.throw_ball();
 
 while True:
