@@ -20,8 +20,13 @@ conn.close_connection()
 # context = ssl.create_default_context (ssl.Purpose.CLIENT_AUTH)
 # context.load_cert_chain("../serveur/server.crt", keyfile="../serveur/server.key")
 
+<<<<<<< HEAD
+# echo server
+def start(conn):
+=======
 # # echo server
 # def star(conn):
+>>>>>>> 7fdffb14461ea5ed0cb8d04b1ea9e7882a0fcd94
 
 #     connected = 0
 
@@ -73,6 +78,22 @@ conn.close_connection()
 #             else:
 #                 conn.send(b"NOPE:null;")
         
+<<<<<<< HEAD
+# main program
+srvsocket = socket.socket()
+srvsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+srvsocket.bind((HOST, PORT))
+srvsocket.listen(5)
+
+while True:
+    conn, fromaddr = srvsocket.accept()
+    # ssl
+    # sslconn = context.wrap_socket(conn, server_side=True)
+    # echo(sslconn)
+    # sslconn.close()
+    start(conn)
+    conn.close()
+=======
 # # main program
 # srvsocket = socket.socket()
 # srvsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -87,5 +108,6 @@ conn.close_connection()
 #     # sslconn.close()
 #     star(conn)
 #     conn.close()
+>>>>>>> 7fdffb14461ea5ed0cb8d04b1ea9e7882a0fcd94
     
 # srvsocket.close()
