@@ -155,7 +155,7 @@ class Score(object):
 ################################################################################
 class Game(object):
     def __init__(self):
-        self.width = 800
+        self.width = 1500
         self.height = 600
 
         # Games parameters
