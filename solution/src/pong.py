@@ -12,7 +12,7 @@ class Paddle(object):
         self.y = y # not used
         self.max_speed = max_speed # not used
         self.paddle_speed = paddle_speed = [ 0, 0 ]
-        self.image = pygame.image.load("images/lightsaber_green.png")
+        self.image = pygame.image.load("../images/lightsaber_green.png")
         self.coords = self.image.get_rect()
         
     def move_paddle(self, direction):
