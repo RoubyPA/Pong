@@ -81,20 +81,22 @@ class Protocol(object):
         sarg = arg.split(",")
         return act, sarg
 
-    def run(self):
-        while True:
-            cmd = self.conn.recv_cmd()
-            act, arg = self.parse_cmd(cmd)
+    def recv_command(self):
+        cmds = self.conn.recv_cmd_list()
 
-            if act == "MOVE":
-                print(act)
-            elif act == "SYNC":
-                print(act)
-            elif act == "PING":
-                self.conn.send_cmd(self.format_cmd("PONG", ["null"]))
-            else:
-                print("Comande unkown !")
-                break
+        for cmd in cmds:
+            if cmd not in ('', '\n'):
+                act, arg = self.parse_cmd(cmd)
+            
+                if act == "MOVE":
+                    print(act)
+                elif act == "SYNC":
+                    print(act)
+                elif act == "PING":
+                    self.conn.send_cmd(self.format_cmd("PONG", ["null"]))
+                else:
+                    self.conn.close_connection_with_msg("Commande Unkown !")
+                    sys.exit(1)
     
     def calcul_ping(self):
         # On sais jamais ¯\_(ツ)_/¯
@@ -132,7 +134,8 @@ class Protocol(object):
         
         if self.conn.server == True:
             cmd = self.format_cmd("CONN", [str(version),
-                                           str(self.game.ball.speed),
+                                           str(self.game.ball.vx),
+                                           str(self.game.ball.vy),
                                            str(self.game.player_1.max_speed),
                                            str(self.game.player_2.max_speed)])
             self.conn.send_cmd(cmd)
@@ -155,20 +158,20 @@ class Protocol(object):
             # Commande error
             if act != "CONN":
                 self.conn.close_connection_with_msg("Invalid command: " + act)
-                sys.exit(1)
                 
             # Incompatible version
             if arg[0] != str(version):
                 self.conn.close_connection_with_msg("Incompatible version: " + arg[0])
-                sys.exit(1)
 
             # Set game paraméters
-            self.game.ball.speed = int(arg[1])
-            self.game.player_1.max_speed = int(arg[2])
-            self.game.player_2.max_speed = int(arg[3])
+            self.game.ball.vx = int(arg[1])
+            self.game.ball.vy = int(arg[2])
+            self.game.player_1.max_speed = int(arg[3])
+            self.game.player_2.max_speed = int(arg[4])
 
             cmd = self.format_cmd("CONN", [str(version),
-                                           str(self.game.ball.speed),
+                                           str(self.game.ball.vx),
+                                           str(self.game.ball.vy),
                                            str(self.game.player_1.max_speed),
                                            str(self.game.player_2.max_speed)])
             self.conn.send_cmd(cmd)
@@ -178,10 +181,11 @@ class Protocol(object):
 
             if atc == "NOPE":
                 self.conn.close_connection_with_msg("Incompatible version: " + arg[0])
-                sys.exit(1)
-            
+                
         self.connected = True
-        
+
+    def game_mode(self):
+        self.conn.set_recv_no_blocking()
         
 ################################################################################
 # Main                                                                         #
@@ -193,18 +197,19 @@ session = Game()
 multi = Protocol(connection, session)
 
 multi.connection()
-time.sleep(0.5) # HACK : to be sure we dont mix connection and ping trams
+time.sleep(0.5)
 multi.calcul_ping()
-_thread.start_new_thread(multi.run, ())
-
-session.throw_ball();
+multi.game_mode()
+        
+session.ball.throw()
 
 while True:
-    for e in pygame.event.get():
-        # Check for exit
-        if e.type == pygame.QUIT:
-            connection.close_connection_with_msg("Pygame event quit")
-            sys.exit()
-
-        session.update_screen()
-        session.delay()
+    for event in pygame.event.get():
+        session.event(event)
+        
+    multi.recv_command()
+    
+    session.draw()
+    session.delay()
+        
+        
