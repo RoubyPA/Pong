@@ -18,9 +18,30 @@ class Sock(object):
             self.wait_client()
         else:
             self.connect_to_server()
+        
+    def close_connection(self):
+        self.data.close()
 
-        # self.data.setblocking(0) # HACK: For optimisation of CPU time
-            
+        if self.server == True:
+            self.conn.close()
+
+        print("Connection close")
+        sys.exit(1)
+        
+    def close_connection_with_msg(self, msg):
+        self.conn.close()
+
+        if self.server == True:
+            self.conn.close()
+
+        print("Connection close:", end=" ")
+
+        if msg in (b'', b'\n', "", "\n"):
+            print("with empty data send by peer")
+        else:
+            print(msg)
+        sys.exit(1)
+        
     def tcp_connect(self):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((self.host, self.port))
@@ -48,14 +69,25 @@ class Sock(object):
     def send_cmd(self, request):
         cmd = request.encode()
         self.data.send(cmd)
+    
+    def recv_cmd_list(self):
+        try:
+            answer = self.data.recv(BUF_SIZE)
+            if answer in (b'', b'\n'):
+                self.close_connection_with_msg(str(answer))
+            return answer.decode().split(';')
+        except:
+            return ['']
+    
     def recv_cmd(self):
         answer = self.data.recv(BUF_SIZE)
         if answer in (b'', b'\n'):
-            close_connection_with_msg(answer)
-            sys.exit(1)
-            
+            self.close_connection_with_msg(str(answer))    
         return answer.decode()
-        
+
+    def set_recv_no_blocking(self):
+        self.data.setblocking(0)
+    
     # """ HACK : setblocking as to 0
     #            Save CPU time
     #            Add time out ?
@@ -69,24 +101,3 @@ class Sock(object):
     #         except:
     #             sys.pause()
     #             #time.sleep(2) # Sleep 20 ms
-        
-    def close_connection(self):
-        self.data.close()
-
-        if self.server == True:
-            self.conn.close()
-        
-        print("Connection close")
-
-    def close_connection_with_msg(self, msg):
-        self.conn.close()
-
-        if self.server == True:
-            self.conn.close()
-
-        print("Connection close:", end=" ")
-
-        if msg in (b'', b'\n', "", "\n"):
-            print("with empty data send by peer")
-        else:
-            print(msg)

@@ -197,37 +197,29 @@ class Game(object):
         self.screen.blit(self.player_1.image, self.player_1.get_coords())
 
         pygame.display.flip()
+
+    def delay(self):
         pygame.time.delay(10)
 
 
-    def play(self):
-        while True:
-            for event in pygame.event.get():
-                # Check for exit
-                if event.type == pygame.QUIT:
-                    sys.exit()
-                    
-                # Check for paddle movements
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        self.player_1.move_paddle("up")
-                        pass
-                    elif event.key == pygame.K_DOWN:
-                        self.player_1.move_paddle("down")
-                        pass
-
-                elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_UP:
-                        self.player_1.move_paddle("stop")
-                        pass
-                    elif event.key == pygame.K_DOWN:
-                        self.player_1.move_paddle("stop")
-                        pass            
+    def event(self, event):
+        # Check for exit
+        if event.type == pygame.QUIT:
+            sys.exit()
             
-            self.draw()
- 
-                      
-################################################################################
-# Game Instance
-################################################################################            
-game = Game().play()
+        # Check for paddle movements
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.player_1.move_paddle("up")
+                pass
+            elif event.key == pygame.K_DOWN:
+                self.player_1.move_paddle("down")
+                pass
+            
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP:
+                    self.player_1.move_paddle("stop")
+                    pass
+                elif event.key == pygame.K_DOWN:
+                    self.player_1.move_paddle("stop")
+                    pass
