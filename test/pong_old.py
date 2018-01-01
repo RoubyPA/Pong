@@ -36,6 +36,7 @@ class Ball(object):
 
     def __init__(self, speed, gravity):
         self.speed = speed
+        
         self.gravity = gravity
         self.ball = pygame.image.load("../images/ball.png")
         self.coords = self.ball.get_rect()

@@ -162,7 +162,7 @@ class Protocol(object):
                 self.conn.close_connection_with_msg("Incompatible version: " + arg[0])
                 sys.exit(1)
 
-            # Set game paraméters
+            # Set game parameters
             self.game.ball.speed = int(arg[1])
             self.game.player_1.max_speed = int(arg[2])
             self.game.player_2.max_speed = int(arg[3])
