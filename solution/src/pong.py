@@ -77,9 +77,9 @@ class Ball(object):
         self.red = (178,34,34)
 
         if self.player == True:
-            self.colour = blue #blue
+            self.colour = self.blue #blue
         else:
-            self.colour = red #red
+            self.colour = self.red #red
         
         # self.paddle_coords = paddle_coords = [ 0, 0 ]
 
@@ -100,10 +100,10 @@ class Ball(object):
         if self.y - self.radius < 0 or self.y + self.radius >= height:
               self.vy = -self.vy
 
-        if self.x - self.radius < 0 and self.colour == (30,144,255):
-            self.colour = (178,34,34)
-        elif self.x - self.radius < 0 and self.colour == (178,34,34):
-            self.colour = (30,144,255)
+        if self.x - self.radius < 0 and self.colour == self.blue:
+            self.colour = self.red
+        elif self.x - self.radius < 0 and self.colour == self.red:
+            self.colour = self.blue
 
     def paddle_collision(self, paddle_coords):
         "detect paddle collision"
