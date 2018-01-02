@@ -49,7 +49,8 @@ class Paddle(object):
     def get_y(self):
         "get self.y"
         return self.get_y
-       
+
+
 
 ################################################################################
 # Class Ball
@@ -88,10 +89,29 @@ class Ball(object):
 
     def get_coords(self):
         return self.coords.move(self.ball_speed)
+    
+    def high_opacity(self, target):
+        self.target = target
+        self.x = self.get_coords()[0]
+        self.y = self.get_coords()[1]
+        self.temp = pygame.Surface((self.image.get_width(), self.image.get_height())).convert()
+        self.temp.blit(self.target, (-self.x, -self.y))
+        self.temp.blit(self.image, (0, 0))
+        self.temp.set_alpha(255)
+        self.target.blit(self.temp, self.get_coords())
+
+    def low_opacity(self, target):
+        self.target = target
+        self.x = self.get_coords()[0]
+        self.y = self.get_coords()[1]
+        self.temp = pygame.Surface((self.image.get_width(), self.image.get_height())).convert()
+        self.temp.blit(self.target, (-self.x, -self.y))
+        self.temp.blit(self.image, (0, 0))
+        self.temp.set_alpha(80)
+        self.target.blit(self.temp, self.get_coords())
+        
 
     
-
-        
 ################################################################################
 # Class Score
 ################################################################################
@@ -153,25 +173,11 @@ class Game(object):
         else:
             self.curent_player = self.player_2
             
-    def blit_alpha(self, target, source, location, opacity):
-        self.location = location
-        self.source = source
-        self.opacity = opacity
-        self.x = self.location[0]
-        self.y = self.location[1]
-        self.temp = pygame.Surface((self.source.get_width(), self.source.get_height())).convert()
-        self.temp.blit(target, (-self.x, -self.y))
-        self.temp.blit(source, (0, 0))
-        self.temp.set_alpha(self.opacity)        
-        target.blit(self.temp, self.location)
-
+    
         
     def draw(self):
         self.screen.fill(self.background_color)
 
-        # Opacity
-        self.blit_alpha(self.screen, self.ball.image, self.ball.get_coords(), 100)
-        
         self.ball.move()
         self.ball.bounce(self.width, self.height)
 
