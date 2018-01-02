@@ -73,10 +73,13 @@ class Ball(object):
         self.radius = radius
         self.player = player
 
+        self.blue = (30,144,255)
+        self.red = (178,34,34)
+
         if self.player == True:
-            self.colour = (30,144,255) #blue
+            self.colour = blue #blue
         else:
-            self.colour = (178,34,34) #red
+            self.colour = red #red
         
         # self.paddle_coords = paddle_coords = [ 0, 0 ]
 
