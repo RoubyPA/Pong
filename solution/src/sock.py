@@ -40,6 +40,7 @@ class Sock(object):
             print("with empty data send by peer")
         else:
             print(msg)
+            
         sys.exit(1)
         
     def tcp_connect(self):

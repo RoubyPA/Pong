@@ -11,9 +11,11 @@ class Paddle(object):
         "init player paddle"
         self.y = y # not used
         self.max_speed = max_speed # not used
-        self.paddle_speed = paddle_speed = [ 0, 0 ]
-        self.image = pygame.image.load("../images/lightsaber_green.png")
+        self.paddle_speed = [ 0, 0 ]
+        self.image = pygame.image.load("../images/racket.png")
         self.coords = self.image.get_rect()
+
+        self.state = "stop"
         
     def move_paddle(self, direction):
         "Move paddle up if direction == up"
@@ -66,7 +68,7 @@ class Ball(object):
         self.vy = vy
         self.radius = radius
         self.colour = colour
-        self.paddle_coords = paddle_coords = [ 0, 0 ]
+        # self.paddle_coords = paddle_coords = [ 0, 0 ]
 
         # if image != 0:
 
@@ -154,21 +156,21 @@ class Score(object):
 # Class Game
 ################################################################################
 class Game(object):
-    def __init__(self):
-        self.width = 1500
+    def __init__(self, server_mode):
+        self.width = 800
         self.height = 600
 
         # Games parameters
-        self.paddle_max_speed = 4
+        paddle_max_speed = 4
 
         # Ball parameters
-        self.ball_gravity = 0
-        self.ball_x = 300
-        self.ball_y = 300
-        self.ball_vx = 4 # velocity along the x axis
-        self.ball_vy = 4
-        self.ball_radius = 20
-        self.ball_color = (0,0,0)
+        ball_gravity = 0
+        ball_x = 300
+        ball_y = 300
+        ball_vx = 4 # velocity along the x axis
+        ball_vy = 4
+        ball_radius = 20
+        ball_color = (0,0,0)
 
         # Background init
         self.bg_R = 229
@@ -181,11 +183,16 @@ class Game(object):
         self.screen = pygame.display.set_mode( (self.width, self.height) )
 
         # Init Games Objects
-        self.player_1 = Paddle(self.height/2, self.paddle_max_speed)
-        self.player_2 = Paddle(self.height/2, self.paddle_max_speed)
-        self.ball = Ball(self.ball_x, self.ball_y, self.ball_vx, self.ball_vy, self.ball_radius, self.ball_color)
+        self.player_1 = Paddle(self.height/2, paddle_max_speed)
+        self.player_2 = Paddle(self.height/2, paddle_max_speed)
+        self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, ball_color)
         self.score = Score()
 
+        if server_mode == True:
+            self.curent_player = self.player_1
+        else:
+            self.curent_player = self.player_2
+            
     def draw(self):
         self.screen.fill(self.background_color)
         self.ball.draw(self.screen)
@@ -196,6 +203,9 @@ class Game(object):
         self.player_1.draw(self.width, self.height)
         self.screen.blit(self.player_1.image, self.player_1.get_coords())
 
+        self.player_2.draw(self.width, self.height)
+        self.screen.blit(self.player_2.image, self.player_2.get_coords())
+
         pygame.display.flip()
 
     def delay(self):
@@ -205,21 +215,23 @@ class Game(object):
     def event(self, event):
         # Check for exit
         if event.type == pygame.QUIT:
-            sys.exit()
+            sys.exit(1)
             
         # Check for paddle movements
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.player_1.move_paddle("up")
-                pass
+                return "up"
             elif event.key == pygame.K_DOWN:
                 self.player_1.move_paddle("down")
-                pass
+                return "down"
             
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_UP:
-                    self.player_1.move_paddle("stop")
-                    pass
-                elif event.key == pygame.K_DOWN:
-                    self.player_1.move_paddle("stop")
-                    pass
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                self.player_1.move_paddle("stop")
+                return "stop"
+            elif event.key == pygame.K_DOWN:
+                self.player_1.move_paddle("stop")
+                return "stop"
+
+        return "nope"
