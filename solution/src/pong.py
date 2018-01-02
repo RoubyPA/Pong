@@ -64,18 +64,21 @@ class Paddle(object):
 # Class Ball
 ################################################################################
 class Ball(object):
-    def __init__(self, x, y, vx, vy, radius, colour, image = 0):
+    def __init__(self, x, y, vx, vy, radius, player):
         "Init ball object"
         self.x = x
         self.y = y
         self.vx = vx
         self.vy = vy
         self.radius = radius
-        self.colour = colour
+        self.player = player
 
+        if self.player == True:
+            self.colour = (30,144,255) #blue
+        else:
+            self.colour = (178,34,34) #red
+        
         # self.paddle_coords = paddle_coords = [ 0, 0 ]
-
-        # if image != 0:
 
     def move(self):
         "move the ball"
@@ -85,7 +88,7 @@ class Ball(object):
     def rect(self):
         "to use or to remove in the future"
         # Rect(left, top, width, height)
-        return pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)        
+        return pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)
                 
     def bounce(self, width, height):
         "bounce the ball on the walls"
@@ -93,6 +96,11 @@ class Ball(object):
               self.vx = -self.vx
         if self.y - self.radius < 0 or self.y + self.radius >= height:
               self.vy = -self.vy
+
+        if self.x - self.radius < 0 and self.colour == (30,144,255):
+            self.colour = (178,34,34)
+        elif self.x - self.radius < 0 and self.colour == (178,34,34):
+            self.colour = (30,144,255)
 
     def paddle_collision(self, paddle_coords):
         "detect paddle collision"
@@ -190,7 +198,7 @@ class Game(object):
         # Init Games Objects
         self.player_1 = Paddle(paddle_max_speed, 1)
         self.player_2 = Paddle(paddle_max_speed, 2)
-        self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, ball_color)
+        self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, server_mode)
         self.score = Score()
 
         # who am i ?
