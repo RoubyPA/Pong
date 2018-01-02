@@ -141,7 +141,56 @@ adaptés aux jeux vidéos. Le but était de faciliter les ajouts
 d'éléments futurs...
 
 \part{Mise en place des solutions}
+\chapter{Architecture du projet}
+\begin{itemize}
+\item[main.py: ] Programme executable : 
+\item[sock.py: ] Class Sock: Ouverture de connection réseaux et envoie
+  et reception de données 
+\item[protocol.py: ] Class Protocol : Protocol de communication pour le
+  multi joueur
+\item[pong.py: ] Class Ball / Class Paddle / Class Game : Element graphique
+  pour le jeux de pong 
+\end{itemize}
+
 \chapter{Mise en place du protocole}
+Pour la mise en place du protocol pour la communication en multi player le
+problème principal et de ne pas ralentire le programme ou ne pas le blocker.
+La première solution à la quelle nous avons pencer et de multi threader le
+programme avec un thread de réception des données sur le réseaux.
+
+Cette solution c'est révélé trop gourmande en CPU et demande a utilisé de
+mechanisme d'explusion étant donnée que les méthode \texttt{recv} de la class
+\texttt{Socket} ne sont pas \texttt{Thread Safety}.
+L'utilisation de mutex rend plus difficile l'écriture du programme et l'on
+prend le risque d'un \textit{deadlock}.
+
+Nous avons donc changer de solution pour faire la lecture des données reçu
+par le réseaux dans la boucle principal.
+Un problème c'est poser car par defaut le comportement par defaut de la
+methode \textit{socket.recv} et d'attendre que des données sois reçu (la
+méthode est dite blockant). Il faut donc demandé à se que la methode
+n'attande pas de données et récuppère uniquement les déjâ données
+disponible ou si il n'y a rien retourne à la fonction appellante.
+Pour cela nous avons défini la méthode :
+\begin{minted}{python}
+  def set_recv_no_blocking(self):
+    self.data.setblocking(0)
+\end{minted}
+
+Il a fallu aussi changer la méthode de reception des données comme ceci:
+\begin{minted}{python}
+  try:
+    answer = self.data.recv(BUF_SIZE)
+    return answer.decode()
+  except:
+    return ['']
+\end{minted}
+
+Nous avons du utilisé un test de type Try/Except car si aucun donnée n'est lu
+lors du \textit{recv} une execption à lieu et quite le programme si elle
+n'est pas géré.
+\textit{Cette version de la methode et simplifié mais sur tout imparfaite
+  car nous de teston pas quelle exception à eu lieu.}
 
 \chapter{Mise en place de l'interface graphique}
 
