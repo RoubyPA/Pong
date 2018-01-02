@@ -64,8 +64,8 @@ def get_option():
 ################################################################################
 class Protocol(object):
     def __init__(self, connection, session):
-        self.connected = False
         self.conn = connection
+        self.connected = False
         self.game = session
 
     def format_cmd(self, act, arg):
@@ -73,11 +73,15 @@ class Protocol(object):
         for a in arg:
             cmd = cmd + a + ","
         cmd = cmd[:-1] + ";"
+        print(cmd)
         return cmd
     
     def parse_cmd(self, cmd):
         act = cmd[:4]
-        arg = cmd[5:-1]
+        if cmd[-1:] == ';':
+            arg = cmd[5:-1]
+        else:
+            arg = cmd[5:]
         sarg = arg.split(",")
         return act, sarg
 
@@ -89,15 +93,20 @@ class Protocol(object):
                 act, arg = self.parse_cmd(cmd)
             
                 if act == "MOVE":
-                    print(act)
-                elif act == "SYNC":
-                    print(act)
+                    self.game.player_2.move_paddle(arg[0])
+                    print(arg[0])
+                # elif act == "SYNC":
+                #     print(act)
                 elif act == "PING":
                     self.conn.send_cmd(self.format_cmd("PONG", ["null"]))
                 else:
                     self.conn.close_connection_with_msg("Commande Unkown !")
                     sys.exit(1)
-    
+
+    def send_move_command(self, up):
+        cmd = self.format_cmd("MOVE", [up])
+        self.conn.send_cmd(cmd)
+                    
     def calcul_ping(self):
         # On sais jamais ¯\_(ツ)_/¯
         if self.connected == False:
@@ -119,7 +128,7 @@ class Protocol(object):
             print("Ping : ", self.ping)
         else:
             pong = self.format_cmd("PONG", ["null"])
-            time.sleep(0.03) # add 30 ms ping <-- To delete
+            # time.sleep(0.03) # add 30 ms ping <-- To delete
             cmd = self.conn.recv_cmd() # Wait ping cmd
             # Not a PING
             if cmd[:4] != "PING":
@@ -194,7 +203,7 @@ host, port, server, ssl = get_option()
 
 connection = Sock(host, port, server=server, tcp=True, ssl=ssl)
 session = Game()
-multi = Protocol(connection, session)
+multi = Protocol(connection ,session)
 
 multi.connection()
 time.sleep(0.5)
@@ -205,11 +214,11 @@ session.ball.throw()
 
 while True:
     for event in pygame.event.get():
-        session.event(event)
-        
+        ret = session.event(event)
+
+    if ret not in ("nope", ""):
+        multi.send_move_command(ret);
     multi.recv_command()
     
     session.draw()
     session.delay()
-        
-        
