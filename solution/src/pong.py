@@ -153,7 +153,6 @@ class Game(object):
         else:
             self.curent_player = self.player_2
             
-            
     def blit_alpha(self, target, source, location, opacity):
         self.location = location
         self.source = source
@@ -166,11 +165,12 @@ class Game(object):
         self.temp.set_alpha(self.opacity)        
         target.blit(self.temp, self.location)
 
+        
     def draw(self):
         self.screen.fill(self.background_color)
 
         # Opacity
-        self.blit_alpha(self.screen, self.ball.image, self.ball.get_coords(), 50)
+        self.blit_alpha(self.screen, self.ball.image, self.ball.get_coords(), 100)
         
         self.ball.move()
         self.ball.bounce(self.width, self.height)
@@ -182,9 +182,10 @@ class Game(object):
         self.screen.blit(self.player_1.image, self.player_1.get_coords())
 
         self.player_2.draw(self.width, self.height)
-        self.screen.blit(self.player_2.image, self.player_2.get_coords())
+        self.screen.blit(self.player_2.image, self.player_2.get_coords())        
 
         pygame.display.flip()
+
 
     def delay(self):
         pygame.time.delay(10)
