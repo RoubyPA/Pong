@@ -200,7 +200,7 @@ multi.connection()
 time.sleep(0.5)
 multi.calcul_ping()
 multi.game_mode()
-        
+
 session.ball.throw()
 
 while True:
@@ -211,5 +211,3 @@ while True:
     
     session.draw()
     session.delay()
-        
-        

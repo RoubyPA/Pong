@@ -67,7 +67,7 @@ class Ball(object):
         self.radius = radius
         self.colour = colour
         self.paddle_coords = paddle_coords = [ 0, 0 ]
-
+              
         # if image != 0:
 
     def move(self):
@@ -155,7 +155,7 @@ class Score(object):
 ################################################################################
 class Game(object):
     def __init__(self):
-        self.width = 1500
+        self.width = 800
         self.height = 600
 
         # Games parameters
@@ -174,7 +174,7 @@ class Game(object):
         self.bg_R = 229
         self.bg_V = 228
         self.bg_B = 240
-        self.background_color = (self.bg_R, self.bg_V, self.bg_B)
+        self.background_color = (self.bg_R, self.bg_V, self.bg_B)        
 
         # Init pygame lib
         pygame.init()
@@ -223,3 +223,4 @@ class Game(object):
                 elif event.key == pygame.K_DOWN:
                     self.player_1.move_paddle("stop")
                     pass
+
