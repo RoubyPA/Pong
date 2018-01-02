@@ -191,10 +191,10 @@ class Game(object):
         # who am i ?
         if server_mode == True:
             self.curent_player = self.player_1
-            self.me = player_1
+            self.me = self.player_1
         else:
             self.curent_player = self.player_2
-            self.me = player_2
+            self.me = self.player_2
             
     def draw(self):
         self.screen.fill(self.background_color)

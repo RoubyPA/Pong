@@ -73,7 +73,6 @@ class Protocol(object):
         for a in arg:
             cmd = cmd + a + ","
         cmd = cmd[:-1] + ";"
-        print(cmd)
         return cmd
     
     def parse_cmd(self, cmd):
@@ -94,7 +93,6 @@ class Protocol(object):
             
                 if act == "MOVE":
                     self.game.player_2.move_paddle(arg[0])
-                    print(arg[0])
                 # elif act == "SYNC":
                 #     print(act)
                 elif act == "PING":
@@ -191,8 +189,11 @@ class Protocol(object):
 
             if atc == "NOPE":
                 self.conn.close_connection_with_msg("Incompatible version: " + arg[0])
-                
+
         self.connected = True
+        time.sleep(0.5)
+        self.calcul_ping()
+        self.game_mode()
 
     def game_mode(self):
         self.conn.set_recv_no_blocking()
@@ -207,10 +208,6 @@ session = Game(server)
 multi = Protocol(connection ,session)
 
 multi.connection()
-time.sleep(0.5)
-multi.calcul_ping()
-multi.game_mode()
-        
 session.ball.throw()
 
 while True:
@@ -218,7 +215,8 @@ while True:
         ret = session.event(event)
 
     if ret not in ("nope", ""):
-        multi.send_move_command(ret);
+        multi.send_move_command(ret)
+        
     multi.recv_command()
     
     session.draw()
