@@ -58,7 +58,7 @@ class Paddle(object):
 # Class Ball
 ################################################################################
 class Ball(object):
-    def __init__(self, x, y, vx, vy, radius, colour, image = 0):
+    def __init__(self, x, y, vx, vy):
         "Init ball object"
         self.x = x
         self.y = y
@@ -67,6 +67,9 @@ class Ball(object):
         self.radius = radius
         self.colour = colour
         self.paddle_coords = paddle_coords = [ 0, 0 ]
+        
+        self.image = pygame.image.load("../images/ball.png")
+        self.coords = self.image.get_rect()
               
         # if image != 0:
 
