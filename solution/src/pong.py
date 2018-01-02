@@ -62,6 +62,7 @@ class Ball(object):
         self.y = y
         self.vx = vx
         self.vy = vy
+        self.opacity = 255
         self.ball_speed = [ self.vx, self.vy ]
 
         self.image = pygame.image.load("../images/ball.png")
@@ -89,29 +90,21 @@ class Ball(object):
 
     def get_coords(self):
         return self.coords.move(self.ball_speed)
-    
-    def high_opacity(self, target):
+
+    def draw(self, target, opacity = "high"):
         self.target = target
         self.x = self.get_coords()[0]
         self.y = self.get_coords()[1]
         self.temp = pygame.Surface((self.image.get_width(), self.image.get_height())).convert()
         self.temp.blit(self.target, (-self.x, -self.y))
         self.temp.blit(self.image, (0, 0))
-        self.temp.set_alpha(255)
+        if (self.opacity == "high"):
+            self.temp.set_alpha(255)
+        else:
+            self.temp.set_alpha(128)
         self.target.blit(self.temp, self.get_coords())
 
-    def low_opacity(self, target):
-        self.target = target
-        self.x = self.get_coords()[0]
-        self.y = self.get_coords()[1]
-        self.temp = pygame.Surface((self.image.get_width(), self.image.get_height())).convert()
-        self.temp.blit(self.target, (-self.x, -self.y))
-        self.temp.blit(self.image, (0, 0))
-        self.temp.set_alpha(80)
-        self.target.blit(self.temp, self.get_coords())
         
-
-    
 ################################################################################
 # Class Score
 ################################################################################
@@ -173,13 +166,14 @@ class Game(object):
         else:
             self.curent_player = self.player_2
             
-    
-        
+            
     def draw(self):
         self.screen.fill(self.background_color)
 
         self.ball.move()
         self.ball.bounce(self.width, self.height)
+
+        self.ball.draw(self.screen, "high")
 
         self.ball.paddle_collision(self.player_1.get_coords())
         self.ball.paddle_collision(self.player_2.get_coords())
