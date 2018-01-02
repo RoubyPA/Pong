@@ -7,12 +7,16 @@ import pygame
 # Class Paddle
 ################################################################################
 class Paddle(object):
-    def __init__(self, y, max_speed):
+    def __init__(self, max_speed, player):
         "init player paddle"
-        self.y = y # not used
+        self.player = player
         self.max_speed = max_speed # not used
         self.paddle_speed = [ 0, 0 ]
-        self.image = pygame.image.load("../images/racket.png")
+
+        if player == 1:
+            self.image = pygame.image.load("../images/racket.png")
+        else:
+            self.image = pygame.image.load("../images/racket_2.png")
         self.coords = self.image.get_rect()
 
         self.state = "stop"
@@ -183,8 +187,8 @@ class Game(object):
         self.screen = pygame.display.set_mode( (self.width, self.height) )
 
         # Init Games Objects
-        self.player_1 = Paddle(self.height/2, paddle_max_speed)
-        self.player_2 = Paddle(self.height/2, paddle_max_speed)
+        self.player_1 = Paddle(paddle_max_speed, 1)
+        self.player_2 = Paddle(paddle_max_speed, 2)
         self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, ball_color)
         self.score = Score()
 
