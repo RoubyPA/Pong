@@ -188,10 +188,13 @@ class Game(object):
         self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, ball_color)
         self.score = Score()
 
+        # who am i ?
         if server_mode == True:
             self.curent_player = self.player_1
+            self.me = player_1
         else:
             self.curent_player = self.player_2
+            self.me = player_2
             
     def draw(self):
         self.screen.fill(self.background_color)

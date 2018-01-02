@@ -110,7 +110,6 @@ class Protocol(object):
             self.game.player_1.state = direction
                     
     def calcul_ping(self):
-        # On sais jamais ¯\_(ツ)_/¯
         if self.connected == False:
             sys.exit(1)
             
