@@ -38,7 +38,7 @@ class Paddle(object):
             self.coords.top = 0
         elif self.coords.bottom >= height:
             self.coords.bottom = height-1
-
+            
     def get_coords(self):
         return self.coords.move(self.paddle_speed)
             
@@ -51,7 +51,6 @@ class Paddle(object):
         return self.get_y
 
 
-
 ################################################################################
 # Class Ball
 ################################################################################
@@ -62,7 +61,6 @@ class Ball(object):
         self.y = y
         self.vx = vx
         self.vy = vy
-        self.opacity = 255
         self.ball_speed = [ self.vx, self.vy ]
 
         self.image = pygame.image.load("../images/ball.png")
@@ -92,6 +90,7 @@ class Ball(object):
         return self.coords.move(self.ball_speed)
 
     def draw(self, target, opacity = "high"):
+        self.opacity = opacity
         self.target = target
         self.x = self.get_coords()[0]
         self.y = self.get_coords()[1]
@@ -125,7 +124,6 @@ class Score(object):
 
     def get_score_player_2 (self):
         return self.player_2
-
         
         
 ################################################################################
