@@ -230,8 +230,15 @@ class Game(object):
 
         pygame.display.flip()
 
-    def delay(self):
-        pygame.time.delay(10)
+    def delay(self, timer):
+        timer = timer*1000
+        
+        if timer < 0:
+            timer = 0
+        elif timer > 10:
+            timer = 10
+        
+        pygame.time.delay(10-int(timer))
 
 
     def event(self, event):
