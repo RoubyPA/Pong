@@ -212,7 +212,7 @@ time.sleep(0.5)
 multi.calcul_ping()
 multi.game_mode()
 
-session.ball.throw()
+#session.ball.throw()
 
 while True:
     for event in pygame.event.get():
