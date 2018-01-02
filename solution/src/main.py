@@ -72,6 +72,7 @@ multi.connection(version)
 session.ball.throw()
 
 while True:
+    start = time.time()
     for event in pygame.event.get():
         ret = session.event(event)
 
@@ -81,4 +82,5 @@ while True:
     multi.recv_command()
     
     session.draw()
-    session.delay()
+    stop = time.time()
+    session.delay(stop-start)
