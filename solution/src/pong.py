@@ -14,9 +14,9 @@ class Paddle(object):
         self.paddle_speed = [ 0, 0 ]
 
         if player == 1:
-            self.image = pygame.image.load("../images/racket.png")
+            self.image = pygame.image.load("../images/racket_b.png")
         else:
-            self.image = pygame.image.load("../images/racket_2.png")
+            self.image = pygame.image.load("../images/racket_r.png")
         self.coords = self.image.get_rect()
 
         self.state = "stop"
