@@ -103,9 +103,11 @@ class Protocol(object):
                     self.conn.close_connection_with_msg("Commande Unkown !")
                     sys.exit(1)
 
-    def send_move_command(self, up):
-        cmd = self.format_cmd("MOVE", [up])
-        self.conn.send_cmd(cmd)
+    def send_move_command(self, direction):
+        if self.game.player_1.state != direction:
+            cmd = self.format_cmd("MOVE", [direction])
+            self.conn.send_cmd(cmd)
+            self.game.player_1.state = direction
                     
     def calcul_ping(self):
         # On sais jamais ¯\_(ツ)_/¯
@@ -202,7 +204,7 @@ class Protocol(object):
 host, port, server, ssl = get_option()
 
 connection = Sock(host, port, server=server, tcp=True, ssl=ssl)
-session = Game()
+session = Game(server)
 multi = Protocol(connection ,session)
 
 multi.connection()
