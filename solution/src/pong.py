@@ -131,10 +131,8 @@ class Score(object):
         self.player_1 = 0
         self.player_2 = 0
 
-
         self.font = pygame.font.Font(None, 25)
-
-
+        
     def add_point_player_1(self):
         self.player_1 += 1
 
