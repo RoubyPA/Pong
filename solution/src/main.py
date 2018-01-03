@@ -80,6 +80,6 @@ while True:
         
     multi.recv_command()
     
-    session.draw(server)
+    session.draw()
     stop = time.time()
     session.delay(stop-start)
