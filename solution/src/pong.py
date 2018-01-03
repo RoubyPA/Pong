@@ -45,7 +45,7 @@ class Paddle(object):
 
     def get_coords(self):
         return self.coords.move(self.paddle_speed)
-            
+       
     def get_speed(self):
         "get self.speed"
         return self.speed
@@ -64,12 +64,10 @@ class Paddle(object):
 # Class Ball
 ################################################################################
 class Ball(object):
-    def __init__(self, x, y, vx, vy, radius, player):
+    def __init__(self, radius, player):
         "Init ball object"
-        self.x = x
-        self.y = y
-        self.vx = vx
-        self.vy = vy
+        self.throw()
+        
         self.radius = radius
         self.player = player
 
@@ -77,12 +75,10 @@ class Ball(object):
         self.red = (178,34,34)
 
         if self.player == True:
-            self.colour = self.blue #blue
+            self.color = self.blue #blue
         else:
-            self.colour = self.red #red
+            self.color = self.red #red
         
-        # self.paddle_coords = paddle_coords = [ 0, 0 ]
-
     def move(self):
         "move the ball"
         self.x += self.vx
@@ -92,7 +88,7 @@ class Ball(object):
         "to use or to remove in the future"
         # Rect(left, top, width, height)
         return pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)
-                
+
     def bounce(self, width, height):
         "bounce the ball on the walls"
         if self.x - self.radius < 0 or self.x + self.radius >= width:
@@ -100,25 +96,20 @@ class Ball(object):
         if self.y - self.radius < 0 or self.y + self.radius >= height:
               self.vy = -self.vy
 
-        if self.x - self.radius < 0 and self.colour == self.blue:
-            self.colour = self.red
-        elif self.x - self.radius < 0 and self.colour == self.red:
-            self.colour = self.blue
-
-    def paddle_collision(self, paddle_coords):
-        "detect paddle collision"
-        if self.x - self.radius < 0:
-            if self.y - self.radius < paddle_coords.bottom and self.y + self.radius > paddle_coords.top:
-                print("touch!")
-            else:
-                print("lost!")
+        if self.x - self.radius < 0 and self.color == self.blue:
+            self.color = self.red
+        elif self.x - self.radius < 0 and self.color == self.red:
+            self.color = self.blue
 
     def draw(self, surface):
-        pygame.draw.circle(surface, self.colour, (self.x, self.y), self.radius, 0)
+        pygame.draw.circle(surface, self.color, (self.x, self.y), self.radius, 0)
 
     def throw(self):
-        "Use random, this method should be in Game"
-                
+        self.x = 300
+        self.y = 300
+        self.vx = 4
+        self.vy = 4
+        
         
 ################################################################################
 # Class Item (bonus, malus, etc) + subclasses
@@ -129,21 +120,7 @@ class Item(object):
         self.x = x
         self.y = y
         self.vx = vx
-        self.vy = vy
-        
-# class RMS(Item):
-#     "Will replace or place RMS face on ball, or send a RMS face to the oponent, don't know"
-
-# class BillGates(Item):
-#     "This one is clearly a malus, add a 'hahaha' sound to it"
-
-# class SteveBalmer(Item):
-#     "A malus too"
-
-# class Torvalds(Item):
-# class JWZ(Item):
-# class Doom(Item):
-# class KungFurry(Item):
+        self.vy = vy        
         
 ################################################################################
 # Class Score
@@ -154,6 +131,8 @@ class Score(object):
         self.player_1 = 0
         self.player_2 = 0
 
+        self.font = pygame.font.Font(None, 25)
+        
     def add_point_player_1(self):
         self.player_1 += 1
 
@@ -166,7 +145,12 @@ class Score(object):
     def get_score_player_2 (self):
         return self.player_2
 
-        
+    def draw(self, screen):
+        score = "Score: {}/{}".format(self.player_1, self.player_2)
+        self.text = self.font.render(score, True, (128, 128, 128))
+        self.screen = screen
+        self.screen.blit(self.text, (700, 0))
+
         
 ################################################################################
 # Class Game
@@ -181,10 +165,6 @@ class Game(object):
 
         # Ball parameters
         ball_gravity = 0
-        ball_x = 300
-        ball_y = 300
-        ball_vx = 4 # velocity along the x axis
-        ball_vy = 4
         ball_radius = 20
         ball_color = (0,0,0)
 
@@ -192,7 +172,7 @@ class Game(object):
         self.bg_R = 229
         self.bg_V = 228
         self.bg_B = 240
-        self.background_color = (self.bg_R, self.bg_V, self.bg_B)        
+        self.background_color = (self.bg_R, self.bg_V, self.bg_B)
 
         # Init pygame lib
         pygame.init()
@@ -201,23 +181,54 @@ class Game(object):
         # Init Games Objects
         self.player_1 = Paddle(paddle_max_speed, 1)
         self.player_2 = Paddle(paddle_max_speed, 2)
-        self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, server_mode)
+        self.ball = Ball(ball_radius, server_mode)
         self.score = Score()
-
+        
         # who am i ?
         if server_mode == True:
             self.curent_player = self.player_1
-            self.me = self.player_1
         else:
             self.curent_player = self.player_2
-            self.me = self.player_2
+
+    def switch_player(self):
+        if self.curent_player == self.player_1:
+            self.curent_player = self.player_2
+        else:
+            self.curent_player = self.player_1
             
+    def paddle_collision(self, paddle_coords):
+        "detect paddle collision"
+        if self.ball.x - self.ball.radius < 0:
+            self.switch_player()
+            
+            if (self.ball.y - self.ball.radius < paddle_coords.bottom and
+                self.ball.y + self.ball.radius > paddle_coords.top):
+                return "touch"
+            else:
+                return "lost"
+
+        return "nope"
+    
     def draw(self):
+        ret = "none"
+        
+        touch = self.paddle_collision(self.curent_player.get_coords()) 
+        if touch == "lost":
+            if self.curent_player == self.player_1:
+                self.score.add_point_player_1()
+                ret = "1 lost"
+            else:
+                self.score.add_point_player_2()
+                ret = "2 lost"
+            self.ball.throw()
+            
+        elif touch == "touch":
+            ret = "touch"
+
         self.screen.fill(self.background_color)
         self.ball.draw(self.screen)
         self.ball.move()
         self.ball.bounce(self.width, self.height)
-        self.ball.paddle_collision(self.player_1.get_coords())
 
         self.player_1.draw(self.width, self.height)
         self.screen.blit(self.player_1.image, self.player_1.get_coords())
@@ -225,8 +236,12 @@ class Game(object):
         self.player_2.draw(self.width, self.height)
         self.screen.blit(self.player_2.image, self.player_2.get_coords())
 
+        self.score.draw(self.screen)
+
         pygame.display.flip()
 
+        return ret
+        
     def delay(self, timer):
         timer = timer*1000
         
