@@ -75,9 +75,9 @@ class Ball(object):
         self.red = (178,34,34)
 
         if self.player == True:
-            self.colour = self.blue #blue
+            self.color = self.blue #blue
         else:
-            self.colour = self.red #red
+            self.color = self.red #red
         
     def move(self):
         "move the ball"
@@ -96,13 +96,13 @@ class Ball(object):
         if self.y - self.radius < 0 or self.y + self.radius >= height:
               self.vy = -self.vy
 
-        if self.x - self.radius < 0 and self.colour == self.blue:
-            self.colour = self.red
-        elif self.x - self.radius < 0 and self.colour == self.red:
-            self.colour = self.blue
+        if self.x - self.radius < 0 and self.color == self.blue:
+            self.color = self.red
+        elif self.x - self.radius < 0 and self.color == self.red:
+            self.color = self.blue
 
     def draw(self, surface):
-        pygame.draw.circle(surface, self.colour, (self.x, self.y), self.radius, 0)
+        pygame.draw.circle(surface, self.color, (self.x, self.y), self.radius, 0)
 
     def throw(self):
         self.x = 300
