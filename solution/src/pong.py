@@ -132,8 +132,6 @@ class Score(object):
         self.player_2 = 0
 
         self.font = pygame.font.Font(None, 25)
-        score = "Score: {}/{}".format(self.player_1, self.player_2)
-        self.text = self.font.render(score, True, (128, 128, 128))
 
     def add_point_player_1(self):
         self.player_1 += 1
@@ -148,8 +146,9 @@ class Score(object):
         return self.player_2
 
     def draw(self, screen):
-        self.screen = screen
-        self.screen.blit(self.text, (700, 0))
+        score = "Score: {}/{}".format(self.player_1, self.player_2)
+        self.text = self.font.render(score, True, (128, 128, 128))
+        screen.blit(self.text, (700, 0))
         
         
 ################################################################################
@@ -191,21 +190,34 @@ class Game(object):
         # who am i ?
         if server_mode == True:
             self.curent_player = self.player_1
-            self.me = self.player_1
         else:
             self.curent_player = self.player_2
-            self.me = self.player_2
 
+    def switch_player(self):
+        if self.curent_player == self.player_1:
+            self.curent_player = self.player_2
+        else:
+            self.curent_player = self.player_1
+            
     def paddle_collision(self, paddle_coords):
         "detect paddle collision"
         if self.ball.x - self.ball.radius < 0:
+            self.switch_player()
+            
             if (self.ball.y - self.ball.radius < paddle_coords.bottom and
                 self.ball.y + self.ball.radius > paddle_coords.top):
-                return "touch"            
+                return "touch"
             else:
                 return "lost"
             
-    def draw(self, player):
+    def draw(self):
+        if self.paddle_collision(self.curent_player.get_coords()) == "lost":
+            if self.curent_player == self.player_1:
+                self.score.add_point_player_1()
+            else:
+                self.score.add_point_player_2()
+            self.ball.throw()
+
         self.screen.fill(self.background_color)
         self.ball.draw(self.screen)
         self.ball.move()
@@ -216,13 +228,6 @@ class Game(object):
 
         self.player_2.draw(self.width, self.height)
         self.screen.blit(self.player_2.image, self.player_2.get_coords())
-
-        if self.paddle_collision(self.player_1.get_coords()) == "lost" and player == True:            
-            self.score.add_point_player_2() # not working
-            print("p2 point")
-        elif self.paddle_collision(self.player_2.get_coords()) == "lost" and player == False:
-            self.score.add_point_player_1()
-            print("p1 point")
 
         self.score.draw(self.screen)
 
