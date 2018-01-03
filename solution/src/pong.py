@@ -64,17 +64,24 @@ class Paddle(object):
 # Class Ball
 ################################################################################
 class Ball(object):
-    def __init__(self, x, y, vx, vy, radius, colour, image = 0):
+    def __init__(self, x, y, vx, vy, radius, player):
         "Init ball object"
         self.x = x
         self.y = y
         self.vx = vx
         self.vy = vy
         self.radius = radius
-        self.colour = colour
-        # self.paddle_coords = paddle_coords = [ 0, 0 ]
+        self.player = player
 
-        # if image != 0:
+        self.blue = (30,144,255)
+        self.red = (178,34,34)
+
+        if self.player == True:
+            self.colour = self.blue #blue
+        else:
+            self.colour = self.red #red
+        
+        # self.paddle_coords = paddle_coords = [ 0, 0 ]
 
     def move(self):
         "move the ball"
@@ -84,7 +91,7 @@ class Ball(object):
     def rect(self):
         "to use or to remove in the future"
         # Rect(left, top, width, height)
-        return pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)        
+        return pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)
                 
     def bounce(self, width, height):
         "bounce the ball on the walls"
@@ -92,6 +99,11 @@ class Ball(object):
               self.vx = -self.vx
         if self.y - self.radius < 0 or self.y + self.radius >= height:
               self.vy = -self.vy
+
+        if self.x - self.radius < 0 and self.colour == self.blue:
+            self.colour = self.red
+        elif self.x - self.radius < 0 and self.colour == self.red:
+            self.colour = self.blue
 
     def paddle_collision(self, paddle_coords):
         "detect paddle collision"
@@ -180,7 +192,7 @@ class Game(object):
         self.bg_R = 229
         self.bg_V = 228
         self.bg_B = 240
-        self.background_color = (self.bg_R, self.bg_V, self.bg_B)
+        self.background_color = (self.bg_R, self.bg_V, self.bg_B)        
 
         # Init pygame lib
         pygame.init()
@@ -189,7 +201,7 @@ class Game(object):
         # Init Games Objects
         self.player_1 = Paddle(paddle_max_speed, 1)
         self.player_2 = Paddle(paddle_max_speed, 2)
-        self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, ball_color)
+        self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, server_mode)
         self.score = Score()
 
         # who am i ?
@@ -215,8 +227,15 @@ class Game(object):
 
         pygame.display.flip()
 
-    def delay(self):
-        pygame.time.delay(10)
+    def delay(self, timer):
+        timer = timer*1000
+        
+        if timer < 0:
+            timer = 0
+        elif timer > 10:
+            timer = 10
+        
+        pygame.time.delay(10-int(timer))
 
 
     def event(self, event):
@@ -233,6 +252,7 @@ class Game(object):
                 self.player_1.move_paddle("down")
                 return "down"
             
+
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
                 self.player_1.move_paddle("stop")
