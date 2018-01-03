@@ -198,6 +198,12 @@ de temps allant de 0 a 10ms (dû au delay) nous risquions d'augmenter la
 dé-synchronisation plus qu'autre chose, nous avons donc décidés de ne
 pas l'intégrer.
 
+Au final nous avons remarquer ne nombreuse désyncronisation, nous avons donc
+mis en place des commandes (\texttt{TOUC / THRW}) de syncronisation sur des
+evenements.
+C'est commande sont envoyer avec une disaine d'arguement se qui permet de toujours
+avoir un états très similaire sur le client et le server.
+
 \chapter{Mise en place de l'interface graphique}
 Nous nous sommes dans un premier temps basés sur l'exemple de code
 fournis, puis l'avons adapté afin qu'il soit orienté objet. Nous avons
@@ -222,13 +228,29 @@ contient les classes suivantes:
     est instancié dans le fichier main.py .
 \end{description}
 
+Nous avons aussi rencontré des problème de syncronisation entre le client
+et le server, et cêla même si il sont tous deux sur la même machine et on
+donc un ping très faible.
+Pour réduire la désincronisation et améliré la stabilité du ``framrate''
+nous avons ajouté un ``timer'' qui calcule le temps que met le jeux à calculer
+de different élement, récupéré les donnée, et mettre à jour l'affichage et le
+soutré au temps d'attente prévu de 10 ms.
 
 \chapter{Mise en commun}
 Le dévelopement s'étant déroulé à distance, nous avons eu quelques
-difficultés à nous organiser, aussi une des majeure difficulté fut de
+difficultés à nous organiser, aussi une des difficulté majeure fut de
 mettre en commun des morceaux de code disparates.
+En effet nous avois juger qu'il n'étais néssesaire de faire des
+schema, se qui a un pour conséquance des fonctionnement très different
+des deux côtés.
+Mais une meilleur préparation aurai sans dout put nous
+permettre de gagner du temps avec un code au final plus coérrent. 
 
 Cela nous a aussi forcé à revenir sur certains points techniques,
 ainsi que questionner certaines des fonctionnalités que nous voulions
 implémenter.
+
+Un autre problème a étais notre gestion du temps, nous n'avons pas
+suffisament avancer au debut du développemet, se qui à eu pour
+conséquance de ne pas pouvoir réalisé toutes les fonctinnalité prévu.
 \end{document}
