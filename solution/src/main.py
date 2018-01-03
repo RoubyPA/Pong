@@ -67,7 +67,6 @@ connection = Sock(host, port, server=server, tcp=True, ssl=ssl)
 session = Game(server)
 multi = Protocol(connection, session)
 
-
 multi.connection(version)
 session.ball.throw()
 
@@ -81,6 +80,6 @@ while True:
         
     multi.recv_command()
     
-    session.draw()
+    session.draw(server)
     stop = time.time()
     session.delay(stop-start)
