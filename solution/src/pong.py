@@ -131,9 +131,7 @@ class Score(object):
         self.player_1 = 0
         self.player_2 = 0
 
-        self.font = pygame.font.Font(None, 25)
-        score = "Score: {}/{}".format(self.player_1, self.player_2)
-        self.text = self.font.render(score, True, (128, 128, 128))
+        self.font = pygame.font.Font(None, 25)       
 
     def add_point_player_1(self):
         self.player_1 += 1
@@ -148,6 +146,8 @@ class Score(object):
         return self.player_2
 
     def draw(self, screen):
+        score = "Score: {}/{}".format(self.player_1, self.player_2)
+        self.text = self.font.render(score, True, (128, 128, 128))
         self.screen = screen
         self.screen.blit(self.text, (700, 0))
         
@@ -217,12 +217,10 @@ class Game(object):
         self.player_2.draw(self.width, self.height)
         self.screen.blit(self.player_2.image, self.player_2.get_coords())
 
-        if self.paddle_collision(self.player_1.get_coords()) == "lost" and player == True:            
-            self.score.add_point_player_2() # not working
-            print("p2 point")
+        if self.paddle_collision(self.player_1.get_coords()) == "lost" and player == False:
+            self.score.add_point_player_2()        
         elif self.paddle_collision(self.player_2.get_coords()) == "lost" and player == False:
             self.score.add_point_player_1()
-            print("p1 point")
 
         self.score.draw(self.screen)
 
