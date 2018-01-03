@@ -80,6 +80,9 @@ while True:
         
     multi.recv_command()
     
-    session.draw()
+    act = session.draw()
+    if act == "1 lost":
+        multi.send_throw_command()
+        
     stop = time.time()
     session.delay(stop-start)

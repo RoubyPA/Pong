@@ -32,6 +32,9 @@ class Protocol(object):
 
     def recv_command(self):
         cmds = self.conn.recv_cmd_list()
+        
+        if cmds == []:
+            return "none"
 
         for cmd in cmds:
             if cmd not in ('', '\n'):
@@ -39,14 +42,36 @@ class Protocol(object):
             
                 if act == "MOVE":
                     self.game.player_2.move_paddle(arg[0])
-                # elif act == "SYNC":
-                #     print(act)
+                elif act == "THRW":
+                    self.game.ball.throw()
+                    self.game.score.player_2 = int(arg[0])
+                    self.game.score.player_1 = int(arg[1])
+                    self.game.player_2.coords[0] = int(arg[2])
+                    self.game.player_2.coords[1] = int(arg[3])
+                    self.game.player_1.coords[0] = int(arg[4])
+                    self.game.player_1.coords[1] = int(arg[5])
+                    self.game.ball.vx = int(arg[6])
+                    self.game.ball.vy = int(arg[7])
                 elif act == "PING":
                     self.conn.send_cmd(self.format_cmd("PONG", ["null"]))
                 else:
                     self.conn.close_connection_with_msg("Commande Unkown !")
                     sys.exit(1)
 
+
+    def send_throw_command(self):
+        "Syncronisation des positions et lancement reinit position balle"
+        cmd = self.format_cmd("THRW",
+                              [str(self.game.score.player_1),
+                               str(self.game.score.player_2),
+                               str(self.game.player_1.coords[0]),
+                               str(self.game.player_1.coords[1]),
+                               str(self.game.player_2.coords[0]),
+                               str(self.game.player_2.coords[1]),
+                               str(self.game.ball.vx),
+                               str(self.game.ball.vy)])
+        self.conn.send_cmd(cmd)
+            
     def send_move_command(self, direction):
         if self.game.player_1.state != direction:
             cmd = self.format_cmd("MOVE", [direction])
