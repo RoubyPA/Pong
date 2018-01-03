@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import sys
+import sys, errno
 import socket
 import time
 
@@ -26,7 +26,7 @@ class Sock(object):
             self.conn.close()
 
         print("Connection close")
-        sys.exit(1)
+        sys.exit(-1)
         
     def close_connection_with_msg(self, msg):
         self.conn.close()
@@ -41,7 +41,7 @@ class Sock(object):
         else:
             print(msg)
             
-        sys.exit(1)
+        sys.exit(-1)
         
     def tcp_connect(self):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,9 +77,13 @@ class Sock(object):
             if answer in (b'', b'\n'):
                 self.close_connection_with_msg(str(answer))
             return answer.decode().split(';')
-        except:
-            return ['']
-    
+        except socket.error as e:
+            err = e.args[0]
+            if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+                return ['']
+            else:
+                self.close_connection_with_msg("exception !")
+            
     def recv_cmd(self):
         answer = self.data.recv(BUF_SIZE)
         if answer in (b'', b'\n'):
