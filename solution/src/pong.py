@@ -45,7 +45,7 @@ class Paddle(object):
 
     def get_coords(self):
         return self.coords.move(self.paddle_speed)
-            
+       
     def get_speed(self):
         "get self.speed"
         return self.speed
@@ -64,12 +64,10 @@ class Paddle(object):
 # Class Ball
 ################################################################################
 class Ball(object):
-    def __init__(self, x, y, vx, vy, radius, player):
+    def __init__(self, radius, player):
         "Init ball object"
-        self.x = x
-        self.y = y
-        self.vx = vx
-        self.vy = vy
+        self.throw()
+        
         self.radius = radius
         self.player = player
 
@@ -109,6 +107,8 @@ class Ball(object):
     def throw(self):
         self.x = 300
         self.y = 300
+        self.vx = 4
+        self.vy = 4
         
         
 ################################################################################
@@ -167,10 +167,6 @@ class Game(object):
 
         # Ball parameters
         ball_gravity = 0
-        ball_x = 300
-        ball_y = 300
-        ball_vx = 4 # velocity along the x axis
-        ball_vy = 4
         ball_radius = 20
         ball_color = (0,0,0)
 
@@ -187,7 +183,7 @@ class Game(object):
         # Init Games Objects
         self.player_1 = Paddle(paddle_max_speed, 1)
         self.player_2 = Paddle(paddle_max_speed, 2)
-        self.ball = Ball(ball_x, ball_y, ball_vx, ball_vy, ball_radius, server_mode)
+        self.ball = Ball(ball_radius, server_mode)
         self.score = Score()
         
         # who am i ?
@@ -212,20 +208,24 @@ class Game(object):
                 return "touch"
             else:
                 return "lost"
-            
+
+        return "nope"
+    
     def draw(self):
-        if self.paddle_collision(self.curent_player.get_coords()) == "lost":
+        ret = "none"
+        
+        touch = self.paddle_collision(self.curent_player.get_coords()) 
+        if touch == "lost":
             if self.curent_player == self.player_1:
                 self.score.add_point_player_1()
+                ret = "1 lost"
             else:
                 self.score.add_point_player_2()
+                ret = "2 lost"
             self.ball.throw()
             
-            if self.curent_player == self.player_2:
-                self.score.add_point_player_1()
-            else:
-                self.score.add_point_player_2()
-            self.ball.throw()
+        elif touch == "touch":
+            ret = "touch"
 
         self.screen.fill(self.background_color)
         self.ball.draw(self.screen)
@@ -242,6 +242,8 @@ class Game(object):
 
         pygame.display.flip()
 
+        return ret
+        
     def delay(self, timer):
         timer = timer*1000
         
