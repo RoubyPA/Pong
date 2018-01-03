@@ -54,11 +54,6 @@ class Paddle(object):
         "get self.y"
         return self.get_y
 
-    def rect(self):
-        "to use or to remove in the future"
-        # Rect(left, top, width, height)
-        return pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)   
-        
 
 ################################################################################
 # Class Ball
@@ -82,12 +77,7 @@ class Ball(object):
     def move(self):
         "move the ball"
         self.x += self.vx
-        self.y += self.vy
-
-    def rect(self):
-        "to use or to remove in the future"
-        # Rect(left, top, width, height)
-        return pygame.Rect(self.x - self.radius, self.y - self.radius, 2 * self.radius, 2 * self.radius)
+        self.y += self.vy        
 
     def bounce(self, width, height):
         "bounce the ball on the walls"
@@ -115,19 +105,20 @@ class Ball(object):
 # Class Item (bonus, malus, etc) + subclasses
 ################################################################################
 class Item(object):
-    "Item class, will serve as a superclass for bonus elements, see example below"
+    "Item class, its was destined to be a superclass for bonus elements, see example below"
     def __init__(self, x, y, vx, vy, ):
         self.x = x
         self.y = y
         self.vx = vx
-        self.vy = vy        
-        
+        self.vy = vy
+
+    #Add examples
+            
 ################################################################################
 # Class Score
 ################################################################################
 class Score(object):
     def __init__(self):
-        "todo: write a graphical module that go on top of the elements"
         self.player_1 = 0
         self.player_2 = 0
 
