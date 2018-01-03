@@ -83,6 +83,10 @@ while True:
     act = session.draw()
     if act == "1 lost":
         multi.send_throw_command()
+    elif act == "2 lost":
+        multi.send_throw_command()
+    elif act == "touch":
+        multi.send_touch_command()
         
     stop = time.time()
     session.delay(stop-start)

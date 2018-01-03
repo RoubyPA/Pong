@@ -42,27 +42,89 @@ class Protocol(object):
             
                 if act == "MOVE":
                     self.game.player_2.move_paddle(arg[0])
-                elif act == "THRW":
-                    self.game.ball.throw()
-                    self.game.score.player_2 = int(arg[0])
-                    self.game.score.player_1 = int(arg[1])
+                elif act == "TOUC":
+                    player = arg[0]
+                    color = arg[1]
                     self.game.player_2.coords[0] = int(arg[2])
                     self.game.player_2.coords[1] = int(arg[3])
                     self.game.player_1.coords[0] = int(arg[4])
                     self.game.player_1.coords[1] = int(arg[5])
                     self.game.ball.vx = int(arg[6])
                     self.game.ball.vy = int(arg[7])
+
+                    if color == "red":
+                        self.game.ball.color = self.game.ball.blue
+                    else:
+                        self.game.ball.color = self.game.ball.red
+                
+                    # if player == "player1":
+                    #     if self.game.curent_player == self.game.player_2:
+                    #         print("syncro")
+                    #     else:
+                    #         print("désyncro")
+                    # else:
+                    #     if self.game.curent_player == self.game.player_1:
+                    #         print("syncro")
+                    #     else:
+                    #         print("désyncro")
+                        
+                elif act == "THRW":
+                    self.game.ball.throw()
+                    color = arg[0]
+                    self.game.score.player_2 = int(arg[1])
+                    self.game.score.player_1 = int(arg[2])
+                    self.game.player_2.coords[0] = int(arg[3])
+                    self.game.player_2.coords[1] = int(arg[4])
+                    self.game.player_1.coords[0] = int(arg[5])
+                    self.game.player_1.coords[1] = int(arg[6])
+                    self.game.ball.vx = int(arg[7])
+                    self.game.ball.vy = int(arg[8])
+
+                    if color == "red":
+                        self.game.ball.color = self.game.ball.blue
+                    else:
+                        self.game.ball.color = self.game.ball.red
+                    
                 elif act == "PING":
                     self.conn.send_cmd(self.format_cmd("PONG", ["null"]))
                 else:
                     self.conn.close_connection_with_msg("Commande Unkown !")
                     sys.exit(1)
 
+    def send_touch_command(self):
+        if self.game.curent_player == self.game.player_1:
+            player = "player1"
+        else:
+            player = "player2"
 
+        if self.game.ball.color == self.game.ball.blue:
+            color = "blue"
+        else:
+            color = "red"
+            
+        cmd = self.format_cmd("TOUC",
+                              [str(player),
+                               str(color),
+                               str(self.game.player_1.coords[0]),
+                               str(self.game.player_1.coords[1]),
+                               str(self.game.player_2.coords[0]),
+                               str(self.game.player_2.coords[1]),
+                               str(self.game.ball.vx),
+                               str(self.game.ball.vy)])
+        self.conn.send_cmd(cmd)
+   
+                    
     def send_throw_command(self):
         "Syncronisation des positions et lancement reinit position balle"
+
+        if self.game.ball.color == self.game.ball.blue:
+            color = "blue"
+        else:
+            color = "red"
+
         cmd = self.format_cmd("THRW",
-                              [str(self.game.score.player_1),
+                              [str(color),
+                               str(self.game.score.player_1),
                                str(self.game.score.player_2),
                                str(self.game.player_1.coords[0]),
                                str(self.game.player_1.coords[1]),
