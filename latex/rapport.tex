@@ -26,27 +26,26 @@
 
 \begin{document}
 \maketitle
-
-\begin{abstract}
-\end{abstract}
 \tableofcontents
 
 \part{Présentation du projet}
 
 \part{Idée de départ}
 \chapter{Architecture du programme}
-Le programme doit être un pong en réseaux et doit être jouable à 2;
-plusieurs solution de connections réseaux s'offrent donc à nous:
+Le programme devait être un pong jouable à 2 en réseau;
+sur ce dernier point, plusieurs solution de connexion réseau
+s'offraient à nous:
 \begin{itemize}
 \item Un système Client/Serveur centralisé: \\
   Un tel système nécessite un serveur central ainsi que deux clients, ceux-ci se
-  connectent au server et créent une partie privée via une clé de
+  connectent au serveur et créent une partie privée via une clé de
   session que seul les deux joueurs pourront rejoindre, le serveur
   central doit donc pouvoir gérer plusieurs parties en même temps. \\
-  Le problème de cette solution et qu'il faut entretenir un serveur 24h/24
-  car sans lui les joueurs ne pourrons pas jouer.
+  Le problème de cette solution et qu'il faut entretenir un serveur
+  24h/24, les joueurs ne pouvant pas jouer sans lui .
+  
   Même si on partage les sources du serveur tous les joueurs n'ont pas forcément
-  envie ou les moyens de mettre en place un server pour une partie ou deux.
+  envie ou les moyens de mettre en place un serveur pour une partie ou deux.
 \item Un système Client/Serveur acentré: \\
   Ce système et basé sur un même fichier exécutable qui va pouvoir prendre
   soit le rôle de serveur soit de client. l'avantage de ce système et qu'il n'y
@@ -55,17 +54,18 @@ plusieurs solution de connections réseaux s'offrent donc à nous:
   \textit{Un problème peut se poser si les deux joueur ne sont pas sur le même
     réseau et que les ports ne sont pas ouvert. Des solutions doivent exister
     mais nous n'avons pas eu le temps de chercher}
-  Se système se rapproche d'un P2P (peer2peer) car le server et le client
+  Ce système se rapproche d'un P2P (peer2peer) car le serveur et le client
   aurons peu ou prou le même rôle, chacun devra vérifier que l'autre ne triche
   pas. La principale différence est que le client va prendre les paramètres de
-  jeux du serveur à sa connection.
+  jeux du serveur à sa connexion.
+  
   Ici le serveur n'a pas d'autorité spécifique, les deux côtés doivent être au
   courant de la position de l'autre.
   \textit{Ce qui peut poser problème en cas de ping élevé}
 \end{itemize}
-Nous avons optés pour un système Client/Serveur acentré avec une option au
+Nous avons opté pour un système Client/Serveur acentré avec une option au
 lancement du programme \textit{main.py --server} ou \textit{main.py --client}.
-Nous avons choisi une connection en \texttt{tcp} pour pouvoir repérer plus
+La connexion s'effectue en \texttt{tcp} pour pouvoir repérer plus
 facilement les problèmes de déconnections (\textit{rage quit}).
 
 \chapter{Game design}
@@ -74,12 +74,14 @@ du même coté de l'écran pour ne pas avoir une fenêtre 2 fois plus grande,
 la raquette du deuxième joueur doit apparaître en opacité inférieure pour que
 le premier comprenne instinctivement que ce n'est pas sa raquette, et inversement
 sur l'écran du deuxième.
-De plus il faut que lorsque la balle rebondie sur le mur d'en face son opacité
+
+De plus, il faut que lorsque la balle rebondie sur le mur d'en face son opacité
 change pour signifier au joueur que c'est à lui ou à son adversaire de toucher la
 balle.
-Le fait de voir les deux raquettes permet aussi de repérer une triche éventuelle.
 
-Nous avions aussi prévus un panel de thèmes diffèrents pour la
+Le fait de voir les deux raquettes permet aussi de repérer une triche éventuelle.\\
+
+Nous avions aussi prévus un panel de thèmes différents pour la
 raquette, la balle et le fond d'écran:
 \begin{itemize}
 \item Star Wars
@@ -100,7 +102,7 @@ forme : \texttt{COMMANDE:arg1,arg2,arg3;}.
 La commande est séparée des arguments par deux point ':' et chaque argument est
 séparé par une virgule ',' et la commande de termine par un point virgule ';'.
 
-Pour simplifier la programation de la réception de commande il fut convenu
+Pour simplifier la programmation de la réception de commande il fut convenu
 que la commande ne dépasserai pas 4 caractères (MOVE / CONN). Ainsi il est
 possible de récupérer séparément la commande et les arguments comme ceci:
 \begin{minted}{python}
@@ -118,32 +120,32 @@ Pour récupérer l'action demandée, il suffit de noter que l'on veut les quatre
 caractères de la chaîne, cette méthode est sans doute moins coûteuse qu'un split
 au niveau des deux points (':').
 
-A noté qu'ici on peut voire une condition sur le dernier caractère de la chaîne
-cmd, elle permet de corrigé un bug que nous avons rencontré car la récupération
+A noter qu'ici on peut voir une condition sur le dernier caractère de la chaîne
+cmd, elle permet de corriger un bug que nous avons rencontrés car la récupération
 des commande par le réseau peut se faire de deux façons différente.
-Le fait qu'il y ai deux façons de récupérer les commandes vient lui même d'un
+
+Le fait qu'il y ai deux façons de récupérer les commandes est du a un
 problème rencontré lors de la lecture des données du réseau. En effet
-plusieurs commandes peuvent être lues en même temps sur le réseaux, il faut
-donc découper la chaîne des données brute reçuent au niveau du point virgule
+plusieurs commandes peuvent être lues en même temps sur le réseau, il faut
+donc découper la chaîne des données brutes reçues au niveau du point virgule
 (';').
 Le problème est que la séquence de connections et d'échange de paramètre doit
-respecter un ordre précis et donc nous utilisons une autre fonction qui est
-faite récupéré un seul commande à la fois et la valeur retourné par cette
-fonction se termine par ';'.
-% Pas compris dernière phrase
+respecter un ordre précis et donc nous utilisons une autre fonction qui 
+récupère une seule commande à la fois et dont la valeur de retour se
+termine par ';'.
 
 \chapter{Choix concernant l'affichage graphique} 
 Pour des raisons de modularité, nous avons décidés d'employer le
 paradigme objet, celui-ci se trouve en effet particulièrement bien
 adaptés aux jeux vidéos et autres applications graphiques. Le but
-était de faciliter les ajouts d'éléments futurs...
+était de faciliter les ajouts d'éléments futurs.
 
 \part{Mise en place des solutions}
 \chapter{Architecture du projet}
 \begin{itemize}
 \item[main.py: ] Programme exécutable : 
-\item[sock.py: ] Class Sock: Ouverture de connection réseau et envoi
-  et reception de données 
+\item[sock.py: ] Class Sock: Ouverture de connexion réseau et envoi
+  et réception de données 
 \item[protocol.py: ] Class Protocol : Protocole de communication pour le
   multi-joueur
 \item[pong.py: ] Class Ball / Class Paddle / Class Game : Éléments graphiques
@@ -152,23 +154,23 @@ adaptés aux jeux vidéos et autres applications graphiques. Le but
 
 \chapter{Mise en place du protocole}
 Pour la mise en place du protocole pour la communication en multi-player le
-problème principal est de ne pas ralentir le programme ou ne pas le bloquer.
+problème principal est de ne pas ralentir le programme ou de ne pas le bloquer.
 La première solution à laquelle nous avons pensé et de multi-threader le
 programme avec un thread de réception des données sur le réseau.
 
-Cette solution s'est révélée trop gourmande en CPU et demande à utiliser des
+Cette solution s'est révélée trop gourmande en CPU et demandais d'utiliser des
 mécanismes d'exclusion étant donné que les méthodes \texttt{recv} de la classe
 \texttt{Socket} ne sont pas \texttt{Thread Safety}.
 L'utilisation de mutex rend plus difficile l'écriture du programme et l'on
 prend le risque d'un \textit{deadlock}.
 
-Nous avons donc changés de solution pour faire la lecture des données reçu
+Nous avons donc changés de solution pour faire la lecture des données reçues
 par le réseau dans la boucle principale.
 Un problème s'est posé car par défaut le comportement de la
 méthode \textit{socket.recv} est d'attendre que des données soient reçues (la
 méthode est dite blockent). Il faut donc demander à ce que la méthode
 n'attende pas de données et récupère uniquement les données déjà
-disponibles ou si il n'y a rien retourne à la fonction appellante.
+disponibles ou si il n'y a rien retourne à la fonction appelante.
 Pour cela nous avons définis la méthode :
 \begin{minted}{python}
   def set_recv_no_blocking(self):
@@ -191,18 +193,18 @@ n'est pas gérée.
   car nous ne testons pas quelle exception a eu lieu.}
 
 Nous avons pensé à d'autre commandes pour le multijoueur, comme \texttt{SYNC} qui
-devait permettre de synchroniser l'état et la position du client et du server.
-Nous pensions l'envoyer à intervale régulier via un signal \texttt{ALRME} (alarme),
-le problème et qu'avec le ping et le fait que le message sera lu dans un laps
+devait permettre de synchroniser l'état et la position du client et du serveur
+Nous projetions de l'envoyer à intervalle régulier via un signal \texttt{ALRME} (alarme),
+le problème est qu'avec le ping et le fait que le message sera lu dans un laps
 de temps allant de 0 a 10ms (dû au delay) nous risquions d'augmenter la
 dé-synchronisation plus qu'autre chose, nous avons donc décidés de ne
 pas l'intégrer.
 
-Au final nous avons remarquer ne nombreuse désyncronisation, nous avons donc
-mis en place des commandes (\texttt{TOUC / THRW}) de syncronisation sur des
-evenements.
-C'est commande sont envoyer avec une disaine d'arguement se qui permet de toujours
-avoir un états très similaire sur le client et le server.
+Au final nous avons remarqués ne nombreuse désynchronisation, nous avons donc
+mis en place des commandes (\texttt{TOUC / THRW}) de synchronisation sur des
+événements.
+Ces commande sont envoyées avec une dizaine d’arguments, ce qui permet de toujours
+disposer d'un état très similaire sur le client et le serveur
 
 \chapter{Mise en place de l'interface graphique}
 Nous nous sommes dans un premier temps basés sur l'exemple de code
@@ -211,7 +213,7 @@ regroupés tous les éléments graphiques dans un fichier, celui-ci
 contient les classes suivantes:
 
 \begin{description}
-  \item [Paddle:] elle définit les object de type ``raquettes'' du jeu, elle
+  \item [Paddle:] elle définit les objet de type ``raquettes'' du jeu, elle
     comprend notamment les méthodes move\_paddle et draw.
   \item [Ball:] contrairement à la balle d'origine qui était un
     sprite, cette classe génère un cercle au comportement similaire;
@@ -228,29 +230,28 @@ contient les classes suivantes:
     est instancié dans le fichier main.py .
 \end{description}
 
-Nous avons aussi rencontré des problème de syncronisation entre le client
-et le server, et cêla même si il sont tous deux sur la même machine et on
+Nous avons aussi rencontré des problème de synchronisation entre le client
+et le serveur, et cela même si il sont tous deux sur la même machine et on
 donc un ping très faible.
-Pour réduire la désincronisation et améliré la stabilité du ``framrate''
-nous avons ajouté un ``timer'' qui calcule le temps que met le jeux à calculer
-de different élement, récupéré les donnée, et mettre à jour l'affichage et le
-soutré au temps d'attente prévu de 10 ms.
+Pour réduire la désynchronisation et améliorer la stabilité du framrate
+nous avons ajouté un timer qui calcule le temps que met le jeu à afficher
+les différents éléments, à récupérer les donnée, et mettre à jour l'écran.
 
 \chapter{Mise en commun}
-Le dévelopement s'étant déroulé à distance, nous avons eu quelques
+Le développement s'étant déroulé à distance, nous avons eu quelques
 difficultés à nous organiser, aussi une des difficulté majeure fut de
 mettre en commun des morceaux de code disparates.
-En effet nous avois juger qu'il n'étais néssesaire de faire des
-schema, se qui a un pour conséquance des fonctionnement très different
+En effet nous avions jugé qu'il n'étais nécessaire de faire des
+schéma, se qui a un pour conséquence des fonctionnement très différent
 des deux côtés.
-Mais une meilleur préparation aurai sans dout put nous
-permettre de gagner du temps avec un code au final plus coérrent. 
+Mais une meilleur préparation aurai sans doute put nous
+permettre de gagner du temps avec un code au final plus cohérent.
 
 Cela nous a aussi forcé à revenir sur certains points techniques,
 ainsi que questionner certaines des fonctionnalités que nous voulions
 implémenter.
 
-Un autre problème a étais notre gestion du temps, nous n'avons pas
-suffisament avancer au debut du développemet, se qui à eu pour
-conséquance de ne pas pouvoir réalisé toutes les fonctinnalité prévu.
+Un autre problème fut notre gestion du temps, nous n'avions pas
+suffisamment avancé au début du développement, ce qui a eu pour
+conséquence l'impossibilité de réaliser toutes les fonctionnalités prévues.
 \end{document}
