@@ -38,51 +38,51 @@
 \part{Idée de départ}
 \chapter{Architecture du programme}
 Le programme et doit être un pong en réseaux et doit être jouable a 2.
-Nous avons donc plussieur solution de connection réseaux qui s'offre a
+Nous avons donc plusieurs solution de connections réseaux qui s'offre a
 nous:
 \begin{itemize}
 \item Un système Client/Server centralisé: \\
-  Un tel système néssesite un server centra et 2 client, les client se
-  connect au server et via une clef de session (par example) créer une partie
-  privé que seul les deux joueurs pouront rejoindre, le server central doit
-  donc pouvoir géré plusieur partie en meme temps. \\
+  Un tel système nécessite un server centra et 2 client, les client se
+  connecte au server et via une clef de session (par exemple) créer une partie
+  privé que seul les deux joueurs pourront rejoindre, le server central doit
+  donc pouvoir géré plusieurs partie en même temps. \\
   Le problème de cette solution et qu'il faut entretenir un serveur 24h/24
-  car sans luis les joueurs ne pourron pas jouer.
-  Même si on partage les sources du server tous le joueur n'on pas forcément
+  car sans luis les joueurs ne pourrons pas jouer.
+  Même si on partage les sources du server tous le joueur n'ont pas forcément
   envie ou les moyens de mettre en place un server pour une partie ou deux
 \item Un système Client/Server acentré: \\
-  Ce système et basser sur un même fichier executable qui va pouvoir prendre
+  Ce système et baser sur un même fichier exécutable qui va pouvoir prendre
   sois le rôle de server sois de client. l'avantage de se système et qu'il n'y
-  a pas besion de lancé en autre programme, il faut juste que les joueurs de
-  déside de qui va se connecté a qui. \\
+  a pas besoins de lancé en autre programme, il faut juste que les joueurs de
+  décide de qui va se connecté a qui. \\
   \textit{Un problème peut se poser si les deux joueur ne sont pas sur le même
-    reseaux et que les ports ne sont pas ouvert. Des solution doivent exister
+    réseaux et que les ports ne sont pas ouvert. Des solution doivent exister
     mais nous n'avons pas eu le temps de chercher}
-  Se système se raproche d'un P2P (peer2peer) car le server et le client
-  auron peu ou prou le même rôle, chacun devra vérifié que l'autre ne triche
-  pas. La principal diférence est que le client va prendre les paramètre de
+  Se système se rapproche d'un P2P (peer2peer) car le server et le client
+  aurons peu ou prou le même rôle, chacun devra vérifié que l'autre ne triche
+  pas. La principal différence est que le client va prendre les paramètre de
   jeux du server à sa connection.
-  Ici le server n'a pas d'otorité spésifique, les deux côté doive être au
-  courrant de la possition de l'autre.
+  Ici le server n'a pas d'autorité spécifique, les deux côté doive être au
+  courant de la position de l'autre.
   \textit{Ce qui peut poser problème en cas de ping élevé}
 \end{itemize}
 Nous avons opter pour un système Client/Server acentré avec une option au
 lancement du programme \textit{main.py --server} ou \textit{main.py --client}.
 Nous avons choisi une connection en \texttt{tcp} pour pouvoir repéré plus
-facilement les problème de déconnection (\textit{rage quit}).
+facilement les problème de déconnections (\textit{rage quit}).
 
 \chapter{Game design}
-Pour le disigne du pong nous avons choisi de voir les deux joueur sur l'écran
-de du même coté de l'ecran pour ne pas avoir une fenètre 2 fois plus grande,
-la racket du deusième joueur doit aparaitre en opacité inférieur pour que
-le premier compraine instinctivement que ce n'est pas ca racket, et inversement
-de sur l'ecran du deusième.
-De plus il faut que lors que la ball rebondi sur le mure d'en fase sont opacité
+Pour le design du pong nous avons choisi de voir les deux joueur sur l'écran
+de du même coté de l'écran pour ne pas avoir une fenêtre 2 fois plus grande,
+la racket du deuxième joueur doit apparaître en opacité inférieur pour que
+le premier comprenne instinctivement que ce n'est pas ça racket, et inversement
+de sur l'écran du deuxième.
+De plus il faut que lors que la ball rebondi sur le mure d'en face sont opacité
 change pour signifié au joueur que ces a lui ou a sont adversaire de toucher la
 ball.
 Le fait de voir les deux racket permet aussi de repéré une triche éventuel.
 
-Nous avion aussi prévus un panel de thèmes different pour la racket, la ball et
+Nous avion aussi prévus un panel de thèmes diffèrent pour la racket, la ball et
 le fond d'écran:
 \begin{itemize}
 \item Star Wars
@@ -90,21 +90,21 @@ le fond d'écran:
 \item Kung fury
 \item etc.
 \end{itemize}
-Avec en plus de la possibilité pour le joueur de fair des thèmes personalisé
-avec ces propore images et music.
+Avec en plus de la possibilité pour le joueur de faire des thèmes personnalise
+avec ces propre images et musique.
 
 \part{Recherche de solutions}
 \chapter{Définition d'un protocole}
-Il a donc falut définir un protocol de communication qui permet de comuniqué
+Il a donc fallut définir un protocole de communication qui permet de communiquer
 pour l'échange d'information.
-Pour cela nous somme parti de l'idée de commande acompagné d'argument sous la
+Pour cela nous somme parti de l'idée de commande accompagné d'argument sous la
 forme : \texttt{COMMANDE:arg1,arg2,arg3;}.
 
 La commande est séparé des argument par deux point ':' et chaque argument et
 séparé par une virgule ',' et la commande de termine par un point virgule ';'.
 
 Pour simplifié la programation de la réception de commande il a étais convenu
-que la commande de dépaserai pas 4 caractères (MOVE / CONN). Ainsi il est
+que la commande de dépasserai pas 4 caractères (MOVE / CONN). Ainsi il est
 possible de récupéré séparément la commande et les argument comme ceci:
 \begin{minted}{python}
 def parse_cmd(self, cmd):
@@ -117,20 +117,20 @@ def parse_cmd(self, cmd):
    return act, sarg
 \end{minted}
 
-Pour récupéré l'action demandé il suffit de note que l'on veut les 4 premiere
-caracère de la chaine, cette méthode et sans doute moins couteuse qu'un split
+Pour récupéré l'action demandé il suffit de note que l'on veut les 4 première
+caractère de la chaîne, cette méthode et sans doute moins coûteuse qu'un split
 au niveau des deux points (':').
 
-A noté qu'ici on peut voire une condition sur le dernier caractère de la chaine
-cmd, elle permet de corrigé un bug que nous avon rencontré car la récupération
-des commande par le réseaux peut se faire de deux façon diférente selon.
-Le fait qu'il y ai deux facon de répuréré les commandes vien elle même d'un
+A noté qu'ici on peut voire une condition sur le dernier caractère de la chaîne
+cmd, elle permet de corrigé un bug que nous avons rencontré car la récupération
+des commande par le réseaux peut se faire de deux façon différente.
+Le fait qu'il y ai deux façon de réputerai les commandes vient elle même d'un
 problème rencontré lors de la lecture des données du réseaux. En effet
 plusieurs commandes peuvent être lus en même temps sur le réseaux il faut
-donc découpé la chaine les données brute reçu au niveaux du point virgule
+donc découpé la chaîne les données brute reçu au niveaux du point virgule
 (';').
-Le probleme et que la séquance de connection et d'échange de paramètre doit
-respecté un ordre prési et donc nous utilisont une autre fonction qui est
+Le problème et que la séquence de connections et d'échange de paramètre doit
+respecté un ordre précis et donc nous utilisons une autre fonction qui est
 faite récupéré un seul commande à la fois et la valeur retourné par cette
 fonction se termine par ';'.
 
@@ -143,34 +143,34 @@ d'éléments futurs...
 \part{Mise en place des solutions}
 \chapter{Architecture du projet}
 \begin{itemize}
-\item[main.py: ] Programme executable : 
+\item[main.py: ] Programme exécutable : 
 \item[sock.py: ] Class Sock: Ouverture de connection réseaux et envoie
   et reception de données 
 \item[protocol.py: ] Class Protocol : Protocol de communication pour le
   multi joueur
-\item[pong.py: ] Class Ball / Class Paddle / Class Game : Element graphique
+\item[pong.py: ] Class Ball / Class Paddle / Class Game : Élément graphique
   pour le jeux de pong 
 \end{itemize}
 
 \chapter{Mise en place du protocole}
-Pour la mise en place du protocol pour la communication en multi player le
-problème principal et de ne pas ralentire le programme ou ne pas le blocker.
-La première solution à la quelle nous avons pencer et de multi threader le
+Pour la mise en place du protocole pour la communication en multi player le
+problème principal et de ne pas ralentirez le programme ou ne pas le bloquer.
+La première solution à la quelle nous avons penser et de multi threader le
 programme avec un thread de réception des données sur le réseaux.
 
 Cette solution c'est révélé trop gourmande en CPU et demande a utilisé de
-mechanisme d'explusion étant donnée que les méthode \texttt{recv} de la class
+mécanisme d'exclusion étant donnée que les méthode \texttt{recv} de la class
 \texttt{Socket} ne sont pas \texttt{Thread Safety}.
 L'utilisation de mutex rend plus difficile l'écriture du programme et l'on
 prend le risque d'un \textit{deadlock}.
 
 Nous avons donc changer de solution pour faire la lecture des données reçu
 par le réseaux dans la boucle principal.
-Un problème c'est poser car par defaut le comportement par defaut de la
-methode \textit{socket.recv} et d'attendre que des données sois reçu (la
-méthode est dite blockant). Il faut donc demandé à se que la methode
-n'attande pas de données et récuppère uniquement les déjâ données
-disponible ou si il n'y a rien retourne à la fonction appellante.
+Un problème c'est poser car par défaut le comportement par défaut de la
+méthode \textit{socket.recv} et d'attendre que des données sois reçu (la
+méthode est dite blockent). Il faut donc demandé à se que la méthode
+n'attende pas de données et récupère uniquement les déjà données
+disponible ou si il n'y a rien retourne à la fonction appelante.
 Pour cela nous avons défini la méthode :
 \begin{minted}{python}
   def set_recv_no_blocking(self):
@@ -187,10 +187,17 @@ Il a fallu aussi changer la méthode de reception des données comme ceci:
 \end{minted}
 
 Nous avons du utilisé un test de type Try/Except car si aucun donnée n'est lu
-lors du \textit{recv} une execption à lieu et quite le programme si elle
+lors du \textit{recv} une exécution à lieu et quitte le programme si elle
 n'est pas géré.
-\textit{Cette version de la methode et simplifié mais sur tout imparfaite
+\textit{Cette version de la méthode et simplifié mais sur tout imparfaite
   car nous de teston pas quelle exception à eu lieu.}
+
+Nous avons penser à d'autre commande pour le multi, comme \texttt{SYNC} qui
+devait permettre de synchronisé l'état et la position du client et du server.
+Nous pension l'envoyer a interval régulier via un signal \textt{ALRME} (alarme),
+le problème et qu'avec le ping et le fait que le message sera lu dans un lapes
+de temps alans de 0 a 10ms (du au delay) nous risquons d'augmenter la
+désynchronisation plus qu'autre chose, nous avons donc décide de pas l'intègre.
 
 \chapter{Mise en place de l'interface graphique}
 
