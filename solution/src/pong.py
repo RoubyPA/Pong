@@ -99,7 +99,10 @@ class Ball(object):
         self.y = 300
         self.vx = 4
         self.vy = 4
-        
+
+    def increase_speed(self):
+        self.vx += 1
+        self.vy += 1
         
 ################################################################################
 # Class Item (bonus, malus, etc) + subclasses
@@ -214,6 +217,7 @@ class Game(object):
             self.ball.throw()
             
         elif touch == "touch":
+            self.ball.increase_speed()
             ret = "touch"
 
         self.screen.fill(self.background_color)
