@@ -115,7 +115,19 @@ class Item(object):
         self.vx = vx
         self.vy = vy
 
-    #Add examples
+# class RMS(Item):
+#     "Will replace or place RMS face on ball, or send a RMS face to the oponent, don't know"
+
+# class BillGates(Item):
+#     "This one is clearly a malus, add a 'hahaha' sound to it"
+
+# class SteveBalmer(Item):
+#     "A malus too"
+ 
+# class Torvalds(Item):
+# class JWZ(Item):
+# class Doom(Item):
+# class KungFurry(Item):
             
 ################################################################################
 # Class Score
